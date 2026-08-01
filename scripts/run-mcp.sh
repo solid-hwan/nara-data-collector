@@ -54,12 +54,13 @@ case "${TARGET}" in
   nara-jangteo)
     : "${NARA_PRESPEC_API_KEY:?.env 에 NARA_PRESPEC_API_KEY 가 정의되어야 합니다}"
     export UV_LINK_MODE="${UV_LINK_MODE:-copy}"
-    exec uvx --python 3.11 --from nara-mcp-server nara-server
+    # mcp 2.0이 mcp.server.fastmcp 경로를 제거해 상한 고정 필요 (2026-08-01, VPS 실측)
+    exec uvx --python 3.11 --from nara-mcp-server --with "mcp<2" nara-server
     ;;
   data-go-mcp)
     # Koomook 서버는 API_KEY 환경변수를 기대함
     export API_KEY="${NARA_API_KEY}"
-    exec uvx "data-go-mcp.pps-narajangteo@latest"
+    exec uvx --with "mcp<2" "data-go-mcp.pps-narajangteo@latest"
     ;;
   *)
     echo "[run-mcp] ERROR: 지원하지 않는 대상 '${TARGET}'. nara-jangteo 또는 data-go-mcp 를 지정하세요." >&2
