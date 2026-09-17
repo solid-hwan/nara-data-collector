@@ -258,6 +258,13 @@ Desktop 에는 서브에이전트 개념이 없습니다. 대량 수집·스키�
 서드파티 MCP 두 개가 **물품·용역 중심**이라 놓치는 축을 직접 조회합니다.
 `src/koneps_mcp/` 의 표준 라이브러리 구현이고, 읽기 전용(GET)입니다.
 
+> **전제조건**: [`uv`](https://docs.astral.sh/uv/) 와 Python 3.10+ 가 필요합니다.
+> `scripts/run-own-mcp.sh` 가 `uv run --with` 로 `mcp`·`pydantic` 를 즉석에서
+> 받아 쓰므로 별도 설치·가상환경은 없습니다. `uv` 가 없으면
+> `uv: command not found` 가 납니다 — `curl -LsSf https://astral.sh/uv/install.sh | sh`
+> 로 설치하세요. 런처가 `--python 3.11` 을 지정하므로 시스템 python 버전은
+> 상관없습니다.
+
 | Tool | 용도 |
 |---|---|
 | `koneps_search` | 9개 서비스 × 업무구분 전 축 조회 |

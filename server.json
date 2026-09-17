@@ -34,7 +34,9 @@
     {
       "name": "koneps-sionlab",
       "command": "bash",
-      "args": ["scripts/run-own-mcp.sh"],
+      "args": [
+        "scripts/run-own-mcp.sh"
+      ],
       "env": {
         "NARA_API_KEY": "${NARA_API_KEY}"
       }
@@ -42,7 +44,10 @@
     {
       "name": "nara-jangteo",
       "command": "bash",
-      "args": ["scripts/run-mcp.sh", "nara-jangteo"],
+      "args": [
+        "scripts/run-mcp.sh",
+        "nara-jangteo"
+      ],
       "env": {
         "NARA_API_KEY": "${NARA_API_KEY}",
         "NARA_PRESPEC_API_KEY": "${NARA_PRESPEC_API_KEY}"
@@ -51,7 +56,10 @@
     {
       "name": "data-go-mcp.pps-narajangteo",
       "command": "bash",
-      "args": ["scripts/run-mcp.sh", "data-go-mcp"],
+      "args": [
+        "scripts/run-mcp.sh",
+        "data-go-mcp"
+      ],
       "env": {
         "NARA_API_KEY": "${NARA_API_KEY}"
       }
@@ -60,34 +68,42 @@
   "tools": [
     {
       "name": "koneps_search",
+      "server": "koneps-sionlab",
       "description": "나라장터 전 업무구분 조회 — 물품·용역·공사·외자·기타공고, 사전규격, 조달요청, 계약, 누리장터 민간입찰"
     },
     {
       "name": "koneps_coverage",
+      "server": "koneps-sionlab",
       "description": "조회 가능한 서비스·업무구분 조합과 활용신청 번호 (API 호출 없음)"
     },
     {
       "name": "get_bids_by_keyword",
+      "server": "nara-jangteo",
       "description": "키워드로 입찰공고 + 사전규격 검색 (최근 N일)"
     },
     {
       "name": "recommend_bids_for_dept",
+      "server": "nara-jangteo",
       "description": "부서 프로필 기반 입찰공고 Top 추천"
     },
     {
       "name": "analyze_bid_detail",
+      "server": "nara-jangteo",
       "description": "RFP 파일(HWP/PDF/DOCX) 텍스트 추출 및 분석"
     },
     {
       "name": "search_bid_announcements",
+      "server": "data-go-mcp.pps-narajangteo",
       "description": "data.go.kr 원시 입찰공고 검색"
     },
     {
       "name": "search_successful_bids",
+      "server": "data-go-mcp.pps-narajangteo",
       "description": "낙찰정보 조회 (용역/물품/공사 등)"
     },
     {
       "name": "search_contracts",
+      "server": "data-go-mcp.pps-narajangteo",
       "description": "계약정보 조회"
     }
   ]
