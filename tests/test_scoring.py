@@ -123,6 +123,35 @@ class BonusTest(unittest.TestCase):
         self.assertIsNone(result["amount"])
 
 
+class AmountParsingTest(unittest.TestCase):
+    """금액 파서 — Codex 리뷰(2026-09-17)에서 실측된 버그들."""
+
+    def test_zero_in_leading_field_does_not_mask_real_amount(self):
+        """선행 필드의 0 이 실제 금액을 가리면 대형 SI 감점까지 누락된다."""
+        result = scoring.score_row({
+            "bidNtceNm": "OCR", "asignBdgtAmt": "0",
+            "presmptPrce": "6000000000",
+        })
+        self.assertEqual(result["amount"], 6_000_000_000)
+        self.assertTrue(any("대형 SI" in r for r in result["reasons"]))
+
+    def test_negative_amount_is_ignored(self):
+        result = scoring.score_row({"bidNtceNm": "OCR", "asignBdgtAmt": "-100",
+                                    "presmptPrce": "80000000"})
+        self.assertEqual(result["amount"], 80_000_000)
+
+    def test_infinite_value_does_not_raise(self):
+        """"1e309" 는 inf 가 되고 int() 가 OverflowError 를 낸다."""
+        result = scoring.score_row({"bidNtceNm": "OCR", "asignBdgtAmt": "1e309"})
+        self.assertIsNone(result["amount"])
+
+    def test_large_integer_keeps_precision(self):
+        """float 경유는 큰 정수에서 정밀도를 잃는다."""
+        result = scoring.score_row({"bidNtceNm": "OCR",
+                                    "asignBdgtAmt": "12345678901234567"})
+        self.assertEqual(result["amount"], 12345678901234567)
+
+
 class RankTest(unittest.TestCase):
     def test_sorts_descending_and_keeps_zero_score(self):
         """0점도 버리지 않는다 — 표현이 다른 공고를 놓치지 않기 위해."""
@@ -136,6 +165,17 @@ class RankTest(unittest.TestCase):
         scores = [r["_match"]["score"] for r in ranked]
         self.assertEqual(scores, sorted(scores, reverse=True))
         self.assertIn("문서인식", ranked[0]["_match"]["matched"])
+
+    def test_default_keeps_negative_scores(self):
+        """감점(-2.0)은 순위를 내리려는 것이고 제외하려는 것이 아니다.
+
+        min_score=0.0 을 하한으로 쓰면 대형 SI 건이 조용히 삭제돼
+        "기본은 전부 반환" 계약을 어긴다.
+        """
+        rows = [{"bidNtceNm": "도로 공사", "asignBdgtAmt": "7000000000"}]
+        ranked = scoring.rank(rows)
+        self.assertEqual(len(ranked), 1)
+        self.assertLess(ranked[0]["_match"]["score"], 0)
 
     def test_min_score_filters_when_asked(self):
         rows = [{"bidNtceNm": "도로 포장"}, {"bidNtceNm": "OCR 고도화"}]

@@ -34,6 +34,7 @@ import 하지 않는다. 일회성 배치용이라 통합은 별도 과제로 �
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any
 
@@ -126,14 +127,34 @@ _COMPILED: tuple[tuple[float, tuple[tuple[str, re.Pattern[str]], ...]], ...] = t
 
 
 def _amount(row: dict[str, Any]) -> int | None:
+    """유효한 금액을 찾는다.
+
+    선행 필드에 `0` 이나 빈 값이 들어 있고 뒤 필드에 실제 금액이 있는 응답이
+    있다. 첫 파싱 성공값을 그대로 쓰면 금액을 0 으로 판단해 대형 SI 감점까지
+    누락된다(예: `asignBdgtAmt="0"`, `presmptPrce="6000000000"`). 그래서
+    **양의 유한값만** 유효로 보고 아니면 다음 필드를 본다.
+    """
     for field in _AMOUNT_FIELDS:
         raw = row.get(field)
         if raw in (None, ""):
             continue
         try:
-            return int(float(str(raw).replace(",", "").strip()))
+            # int 로 먼저 시도한다 — float 경유는 큰 정수에서 정밀도를 잃는다.
+            value = int(str(raw).replace(",", "").strip())
         except ValueError:
-            continue
+            try:
+                parsed = float(str(raw).replace(",", "").strip())
+            except (ValueError, OverflowError):
+                continue
+            # "1e309" 는 inf 가 되고 int() 가 OverflowError 를 낸다.
+            if not math.isfinite(parsed):
+                continue
+            try:
+                value = int(parsed)
+            except (ValueError, OverflowError):
+                continue
+        if value > 0:
+            return value
     return None
 
 
@@ -192,13 +213,14 @@ def score_row(row: dict[str, Any]) -> dict[str, Any]:
 def rank(rows: list[dict[str, Any]], *, min_score: float = 0.0) -> list[dict[str, Any]]:
     """점수 내림차순으로 정렬한다.
 
-    ``min_score`` 기본값은 0 — 점수가 없는 건도 뒤에 남긴다. 하드 컷오프는
-    표현이 다른 공고를 놓치므로 호출자가 명시할 때만 적용한다.
+    ``min_score`` 가 0 이하면 **필터를 적용하지 않는다**. 0 을 하한으로 쓰면
+    대형 SI 감점(-2.0)을 받은 건이 조용히 삭제돼 "기본은 전부 반환"이라는
+    계약을 어긴다 — 감점은 순위를 내리려는 것이고 제외하려는 것이 아니다.
     """
     scored = []
     for row in rows:
         result = score_row(row)
-        if result["score"] < min_score:
+        if min_score > 0 and result["score"] < min_score:
             continue
         scored.append({**row, "_match": result})
     scored.sort(key=lambda r: r["_match"]["score"], reverse=True)

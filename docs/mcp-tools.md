@@ -21,7 +21,7 @@
 | `keyword` | string\|null | null | 공고명 부분일치 (현재 페이지 클라이언트 필터) |
 | `page_no` | int | 1 | 1~1000 |
 | `num_of_rows` | int | 20 | 1~100 |
-| `include_contacts` | bool | **false** | 담당자 실명·전화·이메일 포함 여부 |
+| `include_contacts` | bool | **false** | 담당자 연락처 포함 여부. **서버에 `KONEPS_ALLOW_CONTACTS=1` 이 있어야 효력** |
 | `rank_by_fit` | bool | false | 적합도 점수로 정렬 + 건별 `_match` 부착 |
 | `min_fit_score` | float | 0.0 | `rank_by_fit` 과 함께. 이 점수 미만 제외 |
 | `max_pages` | int | 1 | 순회할 페이지 수 (1~10). 하루 500건 넘는 축 대응 |

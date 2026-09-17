@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from enum import Enum
 from typing import Any
 
@@ -39,6 +40,16 @@ _CONTACT_FIELDS = frozenset(
         "tel", "email", "telNo", "emailAdrs", "phone", "mobile",
     }
 )
+
+
+# 연락처 노출은 **운영자 환경변수**로만 허용한다.
+# tool 입력만으로 켤 수 있으면 모델이나 원격 클라이언트가 스스로 개인정보
+# 보호를 끌 수 있어 공개 배포의 경계가 되지 못한다. 서버를 띄우는 사람이
+# KONEPS_ALLOW_CONTACTS=1 을 명시해야 include_contacts 가 효력을 갖는다.
+def _contacts_allowed_by_operator() -> bool:
+    return (os.environ.get("KONEPS_ALLOW_CONTACTS") or "").strip().lower() in (
+        "1", "true", "yes",
+    )
 
 
 class Service(str, Enum):
@@ -105,7 +116,9 @@ class SearchInput(BaseModel):
         default=False,
         description=(
             "담당자 이름·전화·이메일을 포함할지. 기본 False — 개인정보가 대화 로그에 "
-            "남지 않게 한다. 실제 연락이 필요하면 공고 원문 링크로 확인하세요."
+            "남지 않게 한다. **서버 환경변수 KONEPS_ALLOW_CONTACTS=1 이 설정된 "
+            "경우에만 효력이 있다** — 이 값만으로는 켜지지 않는다. 실제 연락이 "
+            "필요하면 공고 원문 링크로 확인하세요."
         ),
     )
     rank_by_fit: bool = Field(
@@ -126,6 +139,7 @@ class SearchInput(BaseModel):
             "위해서다. 상위만 보려면 2.0 정도부터 시작하세요."
         ),
     )
+    # page_no + max_pages 가 1000 을 넘으면 조달청이 받지 않는 페이지를 조회한다.
     max_pages: int = Field(
         default=1,
         ge=1,
@@ -148,10 +162,42 @@ _READ_ONLY = {
 }
 
 
-def _scrub(row: dict[str, Any], include_contacts: bool) -> dict[str, Any]:
+# 키 비교용 정규화 집합 — 대소문자·구분자 차이를 흡수한다.
+_CONTACT_KEYS_NORMALIZED = frozenset(
+    f.lower().replace("_", "") for f in _CONTACT_FIELDS
+)
+
+# 이름에 이 조각이 들어가면 연락처로 본다. 조달청이 새 이름의 필드를
+# 추가하거나(_CONTACT_FIELDS 는 관찰 기반 목록이라 완전하지 않다) RFP 추출
+# 계열이 contacts[] 를 끼워 보낼 때를 위한 2차 방어선이다.
+_CONTACT_NAME_HINTS = ("ofcl", "tel", "phone", "mobile", "email", "ceonm", "contact")
+
+
+def _is_contact_key(key: str) -> bool:
+    normalized = key.lower().replace("_", "")
+    if normalized in _CONTACT_KEYS_NORMALIZED:
+        return True
+    return any(hint in normalized for hint in _CONTACT_NAME_HINTS)
+
+
+def _scrub(value: Any, include_contacts: bool) -> Any:
+    """연락처 필드를 재귀적으로 제거한다.
+
+    최상위 키만 보면 `contacts: [{"tel": ...}]` 같은 중첩 구조가 그대로
+    통과하는데, 응답에는 "연락처를 제외했다"고 안내돼 사용자가 안전하다고
+    오해한다. dict·list 를 끝까지 내려가며 제거한다.
+    """
     if include_contacts:
-        return row
-    return {k: v for k, v in row.items() if k not in _CONTACT_FIELDS}
+        return value
+    if isinstance(value, dict):
+        return {
+            k: _scrub(v, include_contacts)
+            for k, v in value.items()
+            if not _is_contact_key(k)
+        }
+    if isinstance(value, list):
+        return [_scrub(v, include_contacts) for v in value]
+    return value
 
 
 # 사업명 필드 정본은 scoring.TITLE_FIELDS 다. 여기서 다시 선언하면 점수
@@ -204,8 +250,11 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
     result = None
     rows: list[dict[str, Any]] = []
     pages_read = 0
+    collected = 0  # 필터 이전 누적 건수 — returned 와 구분해 보고한다
     try:
-        for offset in range(params.max_pages):
+        # page_no 상한(1000)을 넘지 않도록 자른다.
+        pages_to_read = min(params.max_pages, max(1, 1001 - params.page_no))
+        for offset in range(pages_to_read):
             page = await asyncio.to_thread(
                 g2b.fetch,
                 params.service.value,
@@ -220,8 +269,16 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
                 result = page
             pages_read += 1
             rows.extend(page["items"])
+            collected += len(page["items"])
             # 마지막 페이지 — 요청한 만큼 안 왔으면 더 없다.
             if len(page["items"]) < params.num_of_rows:
+                break
+            # total_count 를 다 받았으면 멈춘다. 이 검사가 없으면 전체 건수가
+            # 페이지 크기의 배수일 때(예: total=20, 20건씩) 빈 다음 페이지를
+            # 한 번 더 호출하고, 그 호출이 한도 초과로 실패하면 **이미 완성된
+            # 결과까지 status=error 로 폐기된다**.
+            total = result.get("total_count")
+            if isinstance(total, int) and (params.page_no - 1) * params.num_of_rows + collected >= total:
                 break
     except g2b.KonepsAPIError as exc:
         return {
@@ -246,9 +303,11 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
 
     # 사업명 필드가 서비스마다 달라 호출자가 매번 다른 키를 찾아야 했다.
     # 정규화한 title 을 덧붙인다 (원본 필드는 그대로 둔다).
+    # 요청이 켜도 운영자가 허용하지 않으면 스크러빙한다.
+    reveal_contacts = params.include_contacts and _contacts_allowed_by_operator()
     scrubbed = []
     for row in rows:
-        item = _scrub(row, params.include_contacts)
+        item = _scrub(row, reveal_contacts)
         title = title_of(row)
         if title and "title" not in item:
             item = {"title": title, **item}
@@ -268,15 +327,26 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
             "koneps_rules 로 확인할 수 있습니다."
         )
     if params.max_pages > 1:
-        notes.append(f"{pages_read}페이지를 순회해 {len(rows)}건을 모았습니다.")
+        notes.append(
+            f"{pages_read}페이지를 순회해 {collected}건을 모았습니다"
+            f" (필터 후 {len(rows)}건)."
+        )
     if filtered_by_keyword:
         notes.append(
             "목록 조회의 서버측 키워드 필터는 무시되는 경우가 있어 "
             "현재 페이지 결과를 클라이언트에서 다시 걸렀습니다. "
             "total_count 는 필터 이전 값입니다."
         )
-    if not params.include_contacts:
-        notes.append("담당자 연락처 필드는 제외했습니다 (include_contacts=true 로 포함).")
+    if not reveal_contacts:
+        if params.include_contacts:
+            notes.append(
+                "연락처 포함 요청은 거부했습니다 — 서버에 "
+                "KONEPS_ALLOW_CONTACTS=1 이 설정돼 있지 않습니다."
+            )
+        else:
+            notes.append(
+                "담당자 연락처 필드는 제외했습니다 (중첩 구조까지 재귀 제거)."
+            )
 
     return {
         "status": "ok",
@@ -288,6 +358,7 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
         "returned": len(rows),
         "page_no": result["page_no"],
         "pages_read": pages_read,
+        "collected": collected,
         "ranked": params.rank_by_fit,
         "items": rows,
         "notes": notes,

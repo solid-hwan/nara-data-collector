@@ -160,6 +160,28 @@ class FetchErrorTest(unittest.TestCase):
             else:
                 self.fail("예외가 발생해야 한다")
 
+    def test_error_message_never_contains_url_or_query(self):
+        """예외 문자열이 tool 응답으로 그대로 나가므로 URL·쿼리가 없어야 한다.
+
+        serviceKey 가 쿼리스트링에 있으므로 URL 이 새면 키가 새는 것과 같다.
+        """
+        body = json.dumps({
+            "response": {"header": {"resultCode": "07", "resultMsg": "입력범위값 초과 에러"}}
+        }).encode()
+        err = urllib.error.HTTPError("https://apis.data.go.kr/x?serviceKey=SECRET",
+                                     400, "Bad Request", {}, io.BytesIO(body))
+        with mock.patch.object(g2b.urllib.request, "urlopen", side_effect=err):
+            try:
+                g2b.fetch("bid", business_type="용역",
+                          begin="202609160000", end="202609162359")
+            except g2b.KonepsAPIError as exc:
+                message = str(exc)
+                for leak in ("SECRET", "serviceKey", "apis.data.go.kr", "http"):
+                    self.assertNotIn(leak, message, f"{leak} 가 노출됐다")
+                self.assertIn("07", message, "진단에 필요한 코드는 남아야 한다")
+            else:
+                self.fail("예외가 발생해야 한다")
+
     def test_bad_combination_raises_before_any_request(self):
         """호출 전에 막아야 일일 한도를 낭비하지 않는다."""
         with mock.patch.object(g2b.urllib.request, "urlopen") as patched:

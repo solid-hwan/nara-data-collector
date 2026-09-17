@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -85,6 +86,45 @@ class MultiPageTest(unittest.TestCase):
         self.assertEqual(out["pages_read"], 2)
         self.assertEqual(out["returned"], 4)
 
+    def test_stops_when_total_count_reached(self):
+        """total 이 페이지 크기의 배수면 빈 페이지를 더 부르지 않는다.
+
+        그 추가 호출이 한도 초과로 실패하면 이미 완성된 결과까지
+        status=error 로 폐기된다 — 실측으로 확인했다.
+        """
+        with mock.patch.object(g2b, "fetch", side_effect=[
+            _page([_row()] * 2, total=2),
+            g2b.KonepsAPIError("한도 초과"),
+        ]) as f:
+            out = run(server.koneps_search(server.SearchInput(
+                service="bid", business_type="용역",
+                begin="202609160000", end="202609162359",
+                num_of_rows=2, max_pages=3)))
+        self.assertEqual(f.call_count, 1)
+        self.assertEqual(out["status"], "ok")
+        self.assertEqual(out["returned"], 2)
+
+    def test_page_no_is_clamped_to_api_limit(self):
+        """page_no + max_pages 가 1000 을 넘으면 받지 않는 페이지를 조회한다."""
+        with mock.patch.object(g2b, "fetch",
+                               return_value=_page([_row()] * 2, total=99999)) as f:
+            run(server.koneps_search(server.SearchInput(
+                service="bid", business_type="용역",
+                begin="202609160000", end="202609162359",
+                num_of_rows=2, page_no=1000, max_pages=5)))
+        self.assertEqual([c.kwargs["page_no"] for c in f.call_args_list], [1000])
+
+    def test_collected_is_reported_separately_from_returned(self):
+        """"모았습니다" 건수는 필터 이전 값이어야 한다."""
+        rows = [_row("AI 플랫폼"), _row("도로 포장")]
+        with mock.patch.object(g2b, "fetch", return_value=_page(rows, total=2)):
+            out = run(server.koneps_search(server.SearchInput(
+                service="bid", business_type="용역",
+                begin="202609160000", end="202609162359",
+                num_of_rows=2, max_pages=2, keyword="플랫폼")))
+        self.assertEqual(out["collected"], 2)
+        self.assertEqual(out["returned"], 1)
+
     def test_page_offset_respects_explicit_page_no(self):
         with mock.patch.object(g2b, "fetch", side_effect=[
             _page([_row()] * 2), _page([_row()] * 2),
@@ -116,14 +156,63 @@ class ScrubTest(unittest.TestCase):
         for field in self.CONTACTS:
             self.assertNotIn(field, item, f"{field} 가 새어나갔다")
 
-    def test_contacts_kept_when_explicitly_requested(self):
-        with mock.patch.object(g2b, "fetch",
-                               return_value=_page([_row(**self.CONTACTS)])):
+    def test_request_alone_cannot_reveal_contacts(self):
+        """tool 입력만으로 개인정보 보호를 끌 수 없어야 한다.
+
+        모델이나 원격 클라이언트가 include_contacts=true 를 넣을 수 있으므로,
+        그것만으로 켜지면 공개 배포의 경계가 되지 못한다.
+        """
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("KONEPS_ALLOW_CONTACTS", None)
+            with mock.patch.object(g2b, "fetch",
+                                   return_value=_page([_row(**self.CONTACTS)])):
+                out = run(server.koneps_search(server.SearchInput(
+                    service="bid", business_type="용역",
+                    begin="202609160000", end="202609162359",
+                    include_contacts=True)))
+        self.assertNotIn("ntceInsttOfclTel", out["items"][0])
+        self.assertTrue(any("거부" in n for n in out["notes"]))
+
+    def test_operator_env_plus_request_reveals_contacts(self):
+        with mock.patch.dict(os.environ, {"KONEPS_ALLOW_CONTACTS": "1"}):
+            with mock.patch.object(g2b, "fetch",
+                                   return_value=_page([_row(**self.CONTACTS)])):
+                out = run(server.koneps_search(server.SearchInput(
+                    service="bid", business_type="용역",
+                    begin="202609160000", end="202609162359",
+                    include_contacts=True)))
+        self.assertIn("ntceInsttOfclTel", out["items"][0])
+
+    def test_operator_env_alone_does_not_reveal(self):
+        """운영자가 허용해도 요청하지 않으면 제거한다."""
+        with mock.patch.dict(os.environ, {"KONEPS_ALLOW_CONTACTS": "1"}):
+            with mock.patch.object(g2b, "fetch",
+                                   return_value=_page([_row(**self.CONTACTS)])):
+                out = run(server.koneps_search(server.SearchInput(
+                    service="bid", business_type="용역",
+                    begin="202609160000", end="202609162359")))
+        self.assertNotIn("ntceInsttOfclTel", out["items"][0])
+
+    def test_nested_contacts_are_scrubbed(self):
+        """최상위 키만 보면 contacts[] 가 통과하는데 노트는 '제외했다'고 한다."""
+        row = _row(contacts=[{"tel": "T", "email": "e@x.kr", "name": "김담당"}])
+        with mock.patch.object(g2b, "fetch", return_value=_page([row])):
             out = run(server.koneps_search(server.SearchInput(
                 service="bid", business_type="용역",
-                begin="202609160000", end="202609162359",
-                include_contacts=True)))
-        self.assertIn("ntceInsttOfclTel", out["items"][0])
+                begin="202609160000", end="202609162359")))
+        self.assertNotIn("contacts", out["items"][0])
+
+    def test_contact_key_variants_are_scrubbed(self):
+        """대소문자·구분자 차이와 미등록 별칭도 막는다."""
+        row = _row(**{"NtceInstt_Ofcl_Tel": "T", "mngrPhone": "P",
+                      "officerEmail": "e@x.kr"})
+        with mock.patch.object(g2b, "fetch", return_value=_page([row])):
+            out = run(server.koneps_search(server.SearchInput(
+                service="bid", business_type="용역",
+                begin="202609160000", end="202609162359")))
+        item = out["items"][0]
+        for k in ("NtceInstt_Ofcl_Tel", "mngrPhone", "officerEmail"):
+            self.assertNotIn(k, item, f"{k} 가 통과했다")
 
     def test_note_explains_scrubbing(self):
         with mock.patch.object(g2b, "fetch", return_value=_page([_row()])):
