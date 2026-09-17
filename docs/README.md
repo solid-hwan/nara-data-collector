@@ -8,7 +8,7 @@
 
 | 파일/폴더 | 목적 | 누가 읽나 |
 |---|---|---|
-| [`mcp-tools.md`](mcp-tools.md) | 등록된 MCP tool 7개의 시그니처/제약/예제 | MCP 호출 직전 시그니처 확인 |
+| [`mcp-tools.md`](mcp-tools.md) | 등록된 MCP tool 10개(자체 3 + 서드파티 7)의 시그니처/제약/예제 | MCP 호출 직전 시그니처 확인 |
 | [`claude-desktop-config.template.json`](claude-desktop-config.template.json) | Desktop config 템플릿 (`setup-claude-desktop.sh` 가 사용) | 자동 병합용 |
 | [`sionlab-profile.md`](sionlab-profile.md) | Sion Lab 회사 프로필 (제품 라인, 보유 기술, 매칭 키워드) | 입찰 매칭 룰 작성 시 |
 | [`research/`](research/) | 외부 리서치 노트 (네이버 카페 서베이 등) | 리서치 인덱스는 [`research/README.md`](research/README.md) |

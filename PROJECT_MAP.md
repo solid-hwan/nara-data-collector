@@ -6,7 +6,8 @@
 
 ## 한 줄 요약
 
-나라장터(KONEPS/G2B) 데이터를 **MCP**로 수집(`data/raw/`) → 파이썬으로 가공(`data/processed/`) → 영업 리포트(`data/reports/`) 로 변환하는 파이프라인.
+나라장터(KONEPS/G2B) 데이터를 **MCP 3종**(자체 `koneps-sionlab` + 서드파티 2종)으로 조회하는 워크스페이스.
+수집(`data/raw/`) → 가공 → 리포트 파이프라인도 있으나, 가공·리포트 산출물은 개인정보를 포함해 **로컬 전용**이다(공개 저장소 제외).
 
 ---
 
@@ -19,7 +20,9 @@ KONEPS_sionlab/
 ├── PROJECT_MAP.md                ← 지금 이 파일
 │
 ├── .claude/agents/               서브에이전트 5개 (README 참조)
-├── scripts/                      파이썬 4 + 셸 2 (README 참조)
+├── src/koneps_mcp/               자체 MCP 서버 (g2b·server·scoring)
+├── tests/                        단위 테스트 (API 호출 없음)
+├── scripts/                      파이썬 12 + 셸 4 (README 참조)
 ├── docs/                         사람이 읽는 문서 (README 참조)
 │
 ├── data/
@@ -45,7 +48,7 @@ KONEPS_sionlab/
            │
            ▼
    ┌───────────────┐         ┌─────────────────┐
-   │ MCP 서버 2개   │◀────────│ scripts/run-mcp │
+   │ MCP 서버 3개   │◀────────│ run-own-mcp/run-mcp │
    │ (uvx on-demand)│         │ (.env 로드)      │
    └───────┬───────┘         └─────────────────┘
            │ JSON-RPC

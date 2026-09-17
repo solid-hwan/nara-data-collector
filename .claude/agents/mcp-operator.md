@@ -25,7 +25,7 @@ tools: Read, Bash, Grep, Glob, mcp__koneps-sionlab__koneps_search, mcp__koneps-s
    - 입찰공고 / 낙찰정보 / 계약정보 조회 (저수준 원시 데이터)
 
 ## 운영 원칙
-- **데이터 원본 보존**: MCP 응답은 가공 전 `data/raw/` 에 저장 (파일명: `{source}_{endpoint}_{YYYYMMDD_HHMMSS}.json`)
+- **데이터 원본 보존**: MCP 응답은 가공 전 `data/raw/` 에 저장 (경로: `data/raw/{source}/{tool}/[full/]{extra?}_{YYYYMMDD_HHMMSS}.json` — 2단 디렉터리, 루트 평면 적재 금지)
 - **실패 진단 순서**:
   1. `.mcp.json` 문법 → `python3 -m json.tool < .mcp.json`
   2. `.env` 로드 → `grep -c NARA_API_KEY .env`

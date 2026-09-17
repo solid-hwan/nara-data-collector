@@ -22,6 +22,9 @@
 | `page_no` | int | 1 | 1~1000 |
 | `num_of_rows` | int | 20 | 1~100 |
 | `include_contacts` | bool | **false** | 담당자 실명·전화·이메일 포함 여부 |
+| `rank_by_fit` | bool | false | 적합도 점수로 정렬 + 건별 `_match` 부착 |
+| `min_fit_score` | float | 0.0 | `rank_by_fit` 과 함께. 이 점수 미만 제외 |
+| `max_pages` | int | 1 | 순회할 페이지 수 (1~10). 하루 500건 넘는 축 대응 |
 
 **검증 상태** (2026-09-16 하루치, `numOfRows=1`):
 
@@ -46,11 +49,23 @@
 
 ---
 
+### 3. `koneps_rules`
+`rank_by_fit` 이 쓰는 점수 룰을 반환한다 — 키워드 가중치·기관 보너스·예산
+구간·대형 SI 감점. **API 를 호출하지 않으므로 일일 한도를 쓰지 않는다.**
+
+룰 정본은 [`sionlab-profile.md`](sionlab-profile.md), 구현은
+`src/koneps_mcp/scoring.py` 의 `WEIGHTS`·`DIGITAL_AGENCIES` 다. 다른 회사에
+맞게 쓰려면 그 두 상수를 고치세요.
+
+**검증 상태**: ✅ stdio 호출 확인 (키워드 그룹 8개 반환)
+
+---
+
 ## 서드파티 서버 (검증 2026-04-24)
 
 ## `nara-jangteo` (Datajang/nara-mcp-server)
 
-### 1. `mcp__nara-jangteo__get_bids_by_keyword`
+### 4. `mcp__nara-jangteo__get_bids_by_keyword`
 키워드로 **일반 입찰공고 + 사전규격 공고**를 동시에 조회 (용역/컨설팅/개발/SI).
 
 | 인자 | 타입 | 기본 | 설명 |
@@ -61,17 +76,17 @@
 **반환**: 일반 입찰공고 리스트 + 사전규격 리스트 (공고번호, 기관명, 예산, 마감일, RFP URL 포함)
 **검증 상태**: ✅ 실제 응답 확인 (일반 541건 + 사전규격 335건, 30일)
 
-### 2. `mcp__nara-jangteo__recommend_bids_for_dept`
+### 5. `mcp__nara-jangteo__recommend_bids_for_dept`
 부서 프로필 기반 Top 5 맞춤 추천.
 
-### 3. `mcp__nara-jangteo__analyze_bid_detail`
+### 6. `mcp__nara-jangteo__analyze_bid_detail`
 공고번호로 첨부 RFP(HWP/HWPX/PDF/DOCX/XLSX/ZIP) 자동 다운로드 + 텍스트 추출.
 
 ---
 
 ## `data-go-mcp.pps-narajangteo` (Koomook)
 
-### 4. `mcp__data-go-mcp_pps-narajangteo__search_bid_announcements`
+### 7. `mcp__data-go-mcp_pps-narajangteo__search_bid_announcements`
 나라장터 입찰공고 정보 검색.
 
 | 인자 | 타입 | 기본 | 비고 |
@@ -84,13 +99,13 @@
 **반환 필드**(주요): `bidNtceNo`, `bidNtceNm`, `bidNtceSttusNm`, `ntceInsttNm`, `dmndInsttNm`, `asignBdgtAmt`(배정예산), `presmptPrce`(추정가), `bidClseDate`, `bidNtceUrl`
 **검증 상태**: ✅ 실제 응답 확인 (812건/당일)
 
-### 5. `mcp__data-go-mcp_pps-narajangteo__get_bid_detail`
+### 8. `mcp__data-go-mcp_pps-narajangteo__get_bid_detail`
 개별 입찰공고 상세 조회.
 
-### 6. `mcp__data-go-mcp_pps-narajangteo__search_successful_bids`
+### 9. `mcp__data-go-mcp_pps-narajangteo__search_successful_bids`
 낙찰정보 검색 (낙찰자, 낙찰금액, 낙찰일).
 
-### 7. `mcp__data-go-mcp_pps-narajangteo__search_contracts`
+### 10. `mcp__data-go-mcp_pps-narajangteo__search_contracts`
 계약정보 검색 (계약번호, 계약금액, 계약기간).
 
 ---
@@ -100,7 +115,7 @@
 - `ReadMcpResourceTool` — 리소스 내용 읽기
 
 ## 응답 저장 규칙
-모든 호출 결과는 `data/raw/{source}_{tool}_{extra?}_{YYYYMMDD_HHMMSS}.json` 형식으로 저장. 세부는 `data/raw/README.md` 참조.
+모든 호출 결과는 `data/raw/{source}/{tool}/[full/]{extra?}_{YYYYMMDD_HHMMSS}.json` 형식으로 저장. 세부는 `data/raw/README.md` 참조.
 
 ## Rate limit 정책
 동일 쿼리 1분 내 3회 이상 호출 금지. 캐시(= 최근 `data/raw/` 파일) 우선 조회 후 없을 때만 신규 호출.

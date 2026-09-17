@@ -43,21 +43,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
                   │
                   ▼
          [MCP 서버 프로세스]
-         scripts/run-mcp.sh {target}
+         run-own-mcp.sh (자체)  ·  run-mcp.sh {target} (서드파티)
                   │
-                  ▼  .env 로드 → uvx 기동
-         ┌────────┴────────┐
-         ▼                 ▼
-  nara-mcp-server     data-go-mcp.pps-narajangteo
-  (Datajang)          (Koomook)
-         │                 │
-         ▼                 ▼
+                  ▼  .env 로드 → 서버 기동
+      ┌───────────┼───────────────┐
+      ▼           ▼               ▼
+ koneps-sionlab  nara-mcp-server  data-go-mcp.pps-narajangteo
+ (src/koneps_mcp) (Datajang)      (Koomook)
+  전 업무구분+정렬                 │
+      │           │               │
+      ▼           ▼               ▼
      data.go.kr 공공데이터포털 API
 ```
 
 **핵심 설계 결정**:
 1. **`.mcp.json` 에 API 키 0개** — 대신 `scripts/run-mcp.sh` 가 `.env` 를 로드 후 uvx 기동. 키 교체 시 `.env` 한 곳만 수정.
-2. **메인 vs 서브에이전트 MCP 접근** — `mcp-operator` 만 frontmatter `tools:` 에 MCP tool 9개(7개 서비스 + 2개 메타) 권한. 다른 에이전트는 MCP 접근 **불가**. 대량/반복 호출은 `mcp-operator` 위임, 간단 조회는 메인이 직접.
+2. **메인 vs 서브에이전트 MCP 접근** — `mcp-operator` 만 frontmatter `tools:` 에 MCP tool 12개(자체 3 + 서드파티 7 + 메타 2) 권한. 다른 에이전트는 MCP 접근 **불가**. 대량/반복 호출은 `mcp-operator` 위임, 간단 조회는 메인이 직접.
 3. **uvx on-demand** — MCP 서버 글로벌 설치 없음. 세션 기동 시 PyPI 에서 pull. 첫 호출 10~30초, 이후 캐시.
 4. **프로젝트 스코프 엄격 준수** — 글로벌 `~/.claude.json` **절대 수정 금지**. `claude mcp add` 류 user-scope CLI **사용 금지**.
 
@@ -66,7 +67,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 에이전트 | 역할 | MCP tool 권한 |
 |---|---|---|
 | `orchestrator` | 요청 분해 → 배분 (코드 작성 안 함) | ❌ |
-| `mcp-operator` | MCP tool 실행, 응답 요약 | ✅ 7개 + 메타 2개 |
+| `mcp-operator` | MCP tool 실행, 응답 요약 | ✅ 10개 + 메타 2개 |
 | `data-modeler` | MCP 응답 JSON → SQLite DDL 설계 | ❌ |
 | `verifier` | 완료 주장 전 증거 수집 | ❌ |
 | `docs-writer` | README/런북/ERD 유지 | ❌ |
@@ -125,7 +126,7 @@ jq '._meta' data/raw/*.json                       # 호출 메타데이터 점�
 
 ## 데이터 보존 규칙
 
-모든 MCP 응답은 **가공 전** `data/raw/{source}_{tool}_{extra?}_{YYYYMMDD_HHMMSS}.json` 형식으로 저장. 파일 최상위에 `_meta` 필드(`source`, `tool`, `called_at`, `params`, `note`) 포함. 규칙은 `data/raw/README.md` 참조. `data/raw/*.json` 는 git 제외 대상.
+모든 MCP 응답은 **가공 전** `data/raw/{source}/{tool}/[full/]{extra?}_{YYYYMMDD_HHMMSS}.json` 형식으로 저장 (2단 디렉터리. `data/raw/` 루트 평면 적재는 금지 — `check_layout.sh` 가 잡는다). 파일 최상위에 `_meta` 필드(`source`, `tool`, `called_at`, `params`, `note`) 포함. 규칙은 `data/raw/README.md` 참조. `data/raw/*.json` 는 git 제외 대상.
 
 ## Rate Limit 정책
 
@@ -152,7 +153,7 @@ jq '._meta' data/raw/*.json                       # 호출 메타데이터 점�
 
 ## SQL 스킬 활용 가이드
 
-2단계(스키마 설계) 진입 시 `data-modeler` 에이전트와 함께:
+3단계(스키마 설계) 진입 시 `data-modeler` 에이전트와 함께:
 - 스키마 설계: `database-architect` 스킬
 - 인덱스/튜닝: `database-optimizer` 스킬
 - Postgres 이관 시: `supabase-postgres-best-practices` 스킬

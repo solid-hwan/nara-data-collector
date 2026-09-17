@@ -79,7 +79,7 @@ data/raw/naver-cafe/bidmaster/board_5_20260508_150330.json
 ## 금지
 - 수정/가공된 데이터 저장 금지 (별도 `data/processed/` 사용)
 - 같은 호출 결과 중복 저장 금지 (timestamp 로 자연스럽게 구분되지만 의도적 덮어쓰기 X)
-- Git 커밋 금지 — 대용량/변동성. `data/` 는 `.gitignore` 대상
+- Git 커밋 금지 — 대용량/변동성. `data/raw/**/*.json` 이 `.gitignore` 대상이다(이 README 등 문서는 추적)
 - **`data/raw/` 루트에 평면 적재 금지** — 반드시 `{source}/{tool}/` 하위에. 위반 발견 시 `mv` 로 즉시 재배치 (2026-05-08 1회 정리됨)
 
 ## 위반 발견 시
