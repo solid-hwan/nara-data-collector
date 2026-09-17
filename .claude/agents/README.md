@@ -10,7 +10,7 @@
 | 파일 | 역할 | 모델 | MCP 권한 | 주요 참조 경로 |
 |---|---|---|---|---|
 | [`orchestrator.md`](orchestrator.md) | 요청 분해 → 에이전트 라우팅 (코드 작성 안 함) | Opus 4.7 | ❌ | 라우팅만 |
-| [`mcp-operator.md`](mcp-operator.md) | MCP tool 실제 호출, 응답 품질 점검 | Sonnet 4.6 | ✅ 9개 (nara 3 + data-go 4 + meta 2) | `data/raw/{source}/{tool}/`, `.env` |
+| [`mcp-operator.md`](mcp-operator.md) | MCP tool 실제 호출, 응답 품질 점검 | Sonnet 4.6 | ✅ 12개 (**koneps-sionlab 3** + nara 3 + data-go 4 + meta 2) | `data/raw/{source}/{tool}/`, `.env` |
 | [`data-modeler.md`](data-modeler.md) | MCP 응답 JSON → 정규화 스키마 설계 | Sonnet 4.6 | ❌ | `data/raw/` 읽기, `db/schema.sql` 산출 |
 | [`verifier.md`](verifier.md) | 완료 주장 전 증거 수집 / 설정 검증 | Sonnet 4.6 | ❌ | `.mcp.json`, `.env`, `data/raw/` |
 | [`docs-writer.md`](docs-writer.md) | README/런북/스키마 문서 유지 | Sonnet 4.6 | ❌ | `README.md`, `docs/*.md` |

@@ -41,7 +41,9 @@ tools: Read, Grep, Glob, Bash
 ## 스킬 활용 지침
 - 데이터 모델링: `database-optimizer`, `database-architect`, `supabase-postgres-best-practices` (2단계)
 - 검증: `verification-before-completion`
-- 2단계(자체 MCP 개발): `mcp-builder`
+- 자체 MCP 수정(`src/koneps_mcp/`): `mcp-operator` 에게 넘긴다. 엔드포인트
+  네임스페이스와 적합도 룰은 실측 기반이라 임의로 바꾸면 안 된다 —
+  `tests/` 가 막는다.
 - 시스템 디버깅: `systematic-debugging`
 
 ## 금기

@@ -19,7 +19,7 @@ from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import g2b
+from . import g2b, scoring
 
 # 응답에 포함된 담당자 연락처는 개인정보다. tool 응답에서 제외한다 —
 # 대화 로그·파일로 흘러 들어가면 회수할 수 없다. 공고 원문 링크로 갈음한다.
@@ -108,6 +108,24 @@ class SearchInput(BaseModel):
             "남지 않게 한다. 실제 연락이 필요하면 공고 원문 링크로 확인하세요."
         ),
     )
+    rank_by_fit: bool = Field(
+        default=False,
+        description=(
+            "적합도 점수로 정렬할지. docs/sionlab-profile.md 의 키워드 가중치 + "
+            "기관·예산 보너스 + 대형 SI 감점을 적용하고 각 건에 _match(점수·근거)를 "
+            "붙인다. 점수는 필터가 아니라 정렬 신호이므로 낮은 점수도 반환한다."
+        ),
+    )
+    max_pages: int = Field(
+        default=1,
+        ge=1,
+        le=10,
+        description=(
+            "순회할 페이지 수. 기본 1 — 하루 공고가 500건을 넘는 업무구분이 있어 "
+            "1페이지만 보면 추천 모집단이 잘린다. 일일 호출 한도(오퍼레이션당 "
+            "1,000건)를 쓰므로 필요한 만큼만 늘리세요."
+        ),
+    )
 
 
 mcp = FastMCP("koneps-sionlab")
@@ -182,17 +200,28 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
     if params.service in (Service.OPENSTD_BID, Service.OPENSTD_AWARD):
         business = None
 
+    result = None
+    rows: list[dict[str, Any]] = []
+    pages_read = 0
     try:
-        result = await asyncio.to_thread(
-            g2b.fetch,
-            params.service.value,
-            business_type=business,
-            begin=params.begin,
-            end=params.end,
-            page_no=params.page_no,
-            num_of_rows=params.num_of_rows,
-            extra_params=extra or None,
-        )
+        for offset in range(params.max_pages):
+            page = await asyncio.to_thread(
+                g2b.fetch,
+                params.service.value,
+                business_type=business,
+                begin=params.begin,
+                end=params.end,
+                page_no=params.page_no + offset,
+                num_of_rows=params.num_of_rows,
+                extra_params=extra or None,
+            )
+            if result is None:
+                result = page
+            pages_read += 1
+            rows.extend(page["items"])
+            # 마지막 페이지 — 요청한 만큼 안 왔으면 더 없다.
+            if len(page["items"]) < params.num_of_rows:
+                break
     except g2b.KonepsAPIError as exc:
         return {
             "status": "error",
@@ -200,7 +229,7 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
             "next_action": "koneps_coverage 로 서비스·업무구분 조합을 확인한 뒤 다시 조회하세요.",
         }
 
-    rows = result["items"]
+    assert result is not None  # max_pages >= 1 이므로 최소 1회 순회한다
     filtered_by_keyword = False
     if params.keyword:
         rows = [r for r in rows if _match_keyword(r, params.keyword)]
@@ -217,7 +246,20 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
         scrubbed.append(item)
     rows = scrubbed
 
+    # 적합도 정렬은 스크러빙 뒤에 한다 — 점수 계산은 사업명·기관명·금액만 보므로
+    # 연락처가 빠져도 결과가 달라지지 않는다.
+    if params.rank_by_fit:
+        rows = scoring.rank(rows)
+
     notes = []
+    if params.rank_by_fit:
+        notes.append(
+            "적합도 점수 내림차순입니다. 각 건의 _match 에 점수·매칭 키워드·"
+            "보너스 근거가 있습니다. 룰 정본은 docs/sionlab-profile.md 이며 "
+            "koneps_rules 로 확인할 수 있습니다."
+        )
+    if params.max_pages > 1:
+        notes.append(f"{pages_read}페이지를 순회해 {len(rows)}건을 모았습니다.")
     if filtered_by_keyword:
         notes.append(
             "목록 조회의 서버측 키워드 필터는 무시되는 경우가 있어 "
@@ -236,6 +278,8 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
         "total_count": result["total_count"],
         "returned": len(rows),
         "page_no": result["page_no"],
+        "pages_read": pages_read,
+        "ranked": params.rank_by_fit,
         "items": rows,
         "notes": notes,
     }
@@ -266,6 +310,21 @@ async def koneps_coverage() -> dict[str, Any]:
             "서비스마다 활용신청이 따로 필요하다. 개발계정은 오퍼레이션당 1,000건/일.",
         ],
     }
+
+
+@mcp.tool(
+    name="koneps_rules",
+    annotations={"title": "적합도 점수 룰 확인", **_READ_ONLY},
+)
+async def koneps_rules() -> dict[str, Any]:
+    """`rank_by_fit` 이 쓰는 점수 룰을 반환한다 (API 호출 없음).
+
+    키워드 가중치·기관 보너스·예산 구간·대형 SI 감점 기준을 그대로 보여준다.
+    룰 정본은 ``docs/sionlab-profile.md`` 이고 이 모듈이 유일한 구현이다.
+    자기 회사에 맞게 쓰려면 ``src/koneps_mcp/scoring.py`` 의 ``WEIGHTS`` 와
+    ``DIGITAL_AGENCIES`` 를 고치세요.
+    """
+    return {"status": "ok", **scoring.explain_rules()}
 
 
 def main() -> None:
