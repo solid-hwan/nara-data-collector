@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-09-17
+
+외부 리뷰(Codex) 반영 — 개인정보 경계 강화 + 점수·페이지네이션 버그.
+
+### Security
+- **중첩 구조 연락처 누출 차단** — `contacts: [{"tel":...}]` 같은 구조가
+  최상위 키 비교를 통과하면서 "연락처를 제외했다"고 안내하고 있었다.
+  재귀 순회 + 키 정규화 + 이름 패턴 2차 방어로 바꿨다
+- **`include_contacts` 를 운영자 환경변수 뒤로** — tool 입력만으로 개인정보
+  보호를 끌 수 있으면 공개 배포의 경계가 되지 못한다. 이제
+  `KONEPS_ALLOW_CONTACTS=1` 과 요청이 둘 다 필요하다
+
+### Fixed
+- `rank()` 기본값이 대형 SI 감점(-2.0) 건을 삭제해 "전부 반환" 계약을
+  어겼다 (실데이터: 공사 300건 중 13건 소실)
+- 선행 금액 필드의 `0`·음수가 실제 금액을 가려 대형 SI 감점까지 누락
+- `1e309` 같은 값이 `OverflowError` 로 점수 계산을 중단
+- 전체 건수가 페이지 크기의 배수일 때 빈 페이지를 더 호출하고, 그 실패로
+  이미 완성된 결과까지 폐기
+- `page_no + max_pages` 가 API 상한(1000)을 초과
+- `"모았습니다"` 건수가 필터 이후 값이었다 (`collected` 로 분리)
+
+### Added
+- 회귀 테스트 13개 (91개 총계) — 예외 문자열에 URL·키가 없음도 고정
+
 ## [0.3.0] — 2026-09-17
 
 추천 룰 구현 + 에이전트 현행화.
@@ -96,3 +121,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.0]: https://github.com/kkhwan1/KONEPS_sionlab/releases/tag/v0.1.0
 [0.3.0]: https://github.com/kkhwan1/KONEPS_sionlab/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kkhwan1/KONEPS_sionlab/compare/v0.1.0...v0.2.0
+[0.3.1]: https://github.com/kkhwan1/KONEPS_sionlab/compare/v0.3.0...v0.3.1

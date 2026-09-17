@@ -4,7 +4,7 @@
   "displayName": "나라장터 MCP (KONEPS)",
   "description": "한국 나라장터(KONEPS/G2B) 공공조달 데이터를 Claude로 자연어 질의. 입찰공고, 낙찰정보, 계약정보, RFP 파일 추출 지원.",
   "descriptionEn": "Query Korean government procurement (KONEPS/G2B) data with Claude via MCP.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "KKHWAN",
     "email": "lee.kkhwan@gmail.com"

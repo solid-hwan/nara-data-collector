@@ -1,6 +1,6 @@
 [project]
 name = "koneps-sionlab-mcp"
-version = "0.3.0"
+version = "0.3.1"
 description = "나라장터(KONEPS/G2B) 공공조달 MCP 서버 — 물품·용역 외 전 업무구분 조회"
 readme = "README.md"
 license = { text = "MIT" }
