@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "koneps-sionlab": {
+      "command": "bash",
+      "args": ["__PROJECT_ROOT__/scripts/run-own-mcp.sh"]
+    },
     "nara-jangteo": {
       "command": "bash",
       "args": ["__PROJECT_ROOT__/scripts/run-mcp.sh", "nara-jangteo"]

@@ -23,9 +23,12 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+from . import __version__
+
 _API_HOST = "https://apis.data.go.kr/1230000"
 _TIMEOUT = 40
-_USER_AGENT = "koneps-sionlab-mcp/0.2"
+# 버전을 하드코딩하면 릴리스마다 드리프트한다 (실제로 0.2 로 남아 있었다).
+_USER_AGENT = f"koneps-sionlab-mcp/{__version__}"
 
 
 class KonepsAPIError(RuntimeError):
@@ -219,6 +222,9 @@ def extract_items(payload: dict[str, Any]) -> tuple[list[dict[str, Any]], int | 
         hint = ""
         if code == "06":
             hint = " (날짜 형식 — YYYYMMDDHHMM 분 단위로 주세요)"
+        elif code == "07":
+            # 개방표준 계열은 하루 범위만 받는다. 2일 이상이면 이 코드가 온다.
+            hint = " (조회 범위 초과 — 하루씩 나눠 조회하세요)"
         elif code == "08":
             hint = " (필수 파라미터 누락)"
         raise KonepsAPIError(f"조달청 API 오류 {code or '?'}: {message or '메시지 없음'}{hint}")
@@ -259,14 +265,18 @@ def fetch(
         begin: 조회 시작 `YYYYMMDDHHMM`.
         end: 조회 종료 `YYYYMMDDHHMM`.
     """
-    spec = SERVICES.get(service)
-    if spec is None:
-        raise KonepsAPIError(
-            f"알 수 없는 서비스 '{service}'. 사용 가능: {', '.join(sorted(SERVICES))}"
-        )
-
+    # 서비스 유효성은 resolve_operation 이 같은 메시지로 검사한다 (중복 제거).
     operation = resolve_operation(service, business_type)
+    spec = SERVICES[service]
     begin_param, end_param = spec["date_params"]
+
+    # 하루 범위만 받는 서비스는 호출 전에 막는다. 그냥 보내면 조달청이
+    # resultCode=07 을 주는데, 호출 한도를 쓰고 나서 알게 된다.
+    if spec.get("single_day_only") and begin[:8] != end[:8]:
+        raise KonepsAPIError(
+            f"{spec['label']} 는 하루 범위만 조회할 수 있습니다 "
+            f"(요청: {begin[:8]}~{end[:8]}). 하루씩 나눠 호출하세요."
+        )
 
     query: dict[str, Any] = {
         "serviceKey": load_api_key(),

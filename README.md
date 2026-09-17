@@ -245,7 +245,12 @@ Desktop 대화창에서 자연어로 요청:
 ```
 
 ### 한계점
-Desktop 에는 서브에이전트 개념이 없습니다. 대량 수집·스키마 설계 같은 복잡한 워크플로우는 Claude Code 를 사용하세요.
+Desktop 에는 서브에이전트 개념이 없습니다. 대량 수집처럼 반복 호출이 많은 작업은
+Claude Code 의 `mcp-operator` 에게 위임하는 편이 낫습니다.
+
+MCP tool 자체는 Code·Desktop 이 동일합니다 — `setup-claude-desktop.sh` 가 서버 3개
+(`koneps-sionlab` 포함)를 모두 등록하므로 공사·외자·기타공고·사전규격·누리장터도
+Desktop 에서 조회됩니다.
 
 설정 자동 병합은 `scripts/setup-claude-desktop.sh` 가 처리합니다 (macOS·Windows·WSL 자동 감지, 기존 설정 병합, 타임스탬프 백업).
 

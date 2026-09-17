@@ -52,7 +52,12 @@ fi
 TARGET="${1:-}"
 case "${TARGET}" in
   nara-jangteo)
-    : "${NARA_PRESPEC_API_KEY:?.env 에 NARA_PRESPEC_API_KEY 가 정의되어야 합니다}"
+    # 사전규격 키가 비어 있으면 NARA_API_KEY 로 폴백한다.
+    # 이전에는 `:?` 로 하드 실패시켰는데, .env.example 이 "403 이 날 때만 별도
+    # 신청"이라 안내하므로 비워 두는 것이 합리적인데도 서버가 기동조차 못 했다.
+    # smithery.yaml 은 이미 같은 폴백을 한다 — 두 경로를 일치시킨다.
+    # 실측(2026-09-17): 같은 키로 사전규격 조회가 동작했다.
+    export NARA_PRESPEC_API_KEY="${NARA_PRESPEC_API_KEY:-${NARA_API_KEY}}"
     export UV_LINK_MODE="${UV_LINK_MODE:-copy}"
     # mcp 2.0이 mcp.server.fastmcp 경로를 제거해 상한 고정 필요 (2026-08-01, VPS 실측)
     exec uvx --python 3.11 --from nara-mcp-server --with "mcp<2" nara-server

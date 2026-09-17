@@ -84,6 +84,12 @@ import json, sys
 root = sys.argv[1]
 cfg = {
   "mcpServers": {
+    # 자체 구현 서버. 물품·용역 외(공사·외자·기타공고·사전규격·
+    # 조달요청·누리장터)는 이 서버만 조회할 수 있다.
+    "koneps-sionlab": {
+      "command": "wsl.exe",
+      "args": ["-e", "bash", f"{root}/scripts/run-own-mcp.sh"]
+    },
     "nara-jangteo": {
       "command": "wsl.exe",
       "args": ["-e", "bash", f"{root}/scripts/run-mcp.sh", "nara-jangteo"]
@@ -115,7 +121,7 @@ if [[ -f "${CONFIG_FILE}" ]]; then
   cp "${CONFIG_FILE}" "${BACKUP}"
   echo "📦 기존 설정 백업: ${BACKUP}"
 
-  # 기본: 기존 mcpServers 에 본 프로젝트 2개 항목만 병합 (다른 서버 보존)
+  # 기본: 기존 mcpServers 에 본 프로젝트 3개 항목만 병합 (다른 서버 보존)
   TMP_MERGED="$(mktemp)"
   TMP_OW="$(mktemp)"
   python3 - "${CONFIG_FILE}" "${OUTPUT}" "${TMP_MERGED}" "${TMP_OW}" <<'PY'
