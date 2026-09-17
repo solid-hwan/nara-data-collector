@@ -1,6 +1,52 @@
 # MCP Tool 카탈로그 (실측 기반)
 
-**검증 시각**: 2026-04-24 KST. MCP 서버 재시작 후 노출된 tool 7개의 실제 시그니처.
+**검증 시각**: 자체 서버 2026-09-17 KST / 서드파티 2026-04-24 KST.
+
+---
+
+## `koneps-sionlab` (자체 구현 · `src/koneps_mcp/`)
+
+2026-09-17 stdio JSON-RPC 실행으로 확인. 읽기 전용(GET).
+
+### 1. `koneps_search`
+9개 서비스를 업무구분별로 조회한다. 서드파티 두 서버가 다루지 않는
+공사·외자·기타공고·사전규격·조달요청·계약과정통합·누리장터를 포함한다.
+
+| 인자 | 타입 | 기본 | 설명 |
+|---|---|---|---|
+| `service` | enum | `bid` | bid·award·prespec·contract·lifecycle·request·private·openstd_bid·openstd_award |
+| `business_type` | enum\|null | null | 물품·용역·공사·외자·기타 / request 만 일반용역·기술용역 |
+| `begin` | string | — | `YYYYMMDDHHMM` (분 단위 필수) |
+| `end` | string | — | `YYYYMMDDHHMM` |
+| `keyword` | string\|null | null | 공고명 부분일치 (현재 페이지 클라이언트 필터) |
+| `page_no` | int | 1 | 1~1000 |
+| `num_of_rows` | int | 20 | 1~100 |
+| `include_contacts` | bool | **false** | 담당자 실명·전화·이메일 포함 여부 |
+
+**검증 상태** (2026-09-16 하루치, `numOfRows=1`):
+
+| 조합 | 오퍼레이션 | totalCount |
+|---|---|---|
+| bid/물품 | `getBidPblancListInfoThng` | 677 |
+| bid/용역 | `getBidPblancListInfoServc` | 565 |
+| bid/공사 | `getBidPblancListInfoCnstwk` | 478 |
+| bid/외자 | `getBidPblancListInfoFrgcpt` | 10 |
+| **bid/기타** | `getBidPblancListInfoEtc` | 24 |
+| award/외자 | `getScsbidListSttusFrgcpt` | 5 |
+| prespec/용역 | `getPublicPrcureThngInfoServc` | 460 |
+| request/기술용역 | `getPrcrmntReqInfoListTechServc` | 17 |
+| private/용역 | `getPrvtBidPblancListInfoServc` | 66 |
+| openstd_award | `getDataSetOpnStdScsbidInfo` | 8,661 |
+
+잘못된 조합(예: award + 기타)은 호출 전에 차단된다 — 실측 확인.
+
+### 2. `koneps_coverage`
+서비스·업무구분 가능 조합과 `public_data_pk`(활용신청 번호)를 반환한다.
+**API 를 호출하지 않으므로 일일 한도를 쓰지 않는다.**
+
+---
+
+## 서드파티 서버 (검증 2026-04-24)
 
 ## `nara-jangteo` (Datajang/nara-mcp-server)
 
