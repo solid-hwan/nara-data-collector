@@ -170,5 +170,36 @@ class FetchErrorTest(unittest.TestCase):
         patched.assert_not_called()
 
 
+class TitleFieldTest(unittest.TestCase):
+    """사업명 필드가 서비스마다 다른 문제를 고정한다.
+
+    누리장터는 bidNtceNm 이 아니라 ntceNm 을 쓴다. 한 필드만 보면
+    키워드 필터가 조용히 0건을 반환하고 제목이 비어 보인다.
+    """
+
+    def setUp(self):
+        try:
+            from koneps_mcp import server
+        except ModuleNotFoundError as exc:  # mcp/pydantic 미설치 환경
+            self.skipTest(f"MCP 의존성 없음: {exc}")
+        self.server = server
+
+    def test_nuri_market_title_field_is_covered(self):
+        self.assertIn("ntceNm", self.server._TITLE_FIELDS)
+        self.assertEqual(
+            self.server.title_of({"ntceNm": "석면조사 용역업체 선정"}),
+            "석면조사 용역업체 선정",
+        )
+
+    def test_keyword_matches_nuri_market_row(self):
+        row = {"ntceNm": "교통영향평가 용역업체 선정"}
+        self.assertTrue(self.server._match_keyword(row, "교통영향평가"))
+        self.assertFalse(self.server._match_keyword(row, "존재하지않는말"))
+
+    def test_nuri_market_officer_name_is_scrubbed(self):
+        """누리장터는 ofclNm 으로 개인 이름을 준다."""
+        self.assertIn("ofclNm", self.server._CONTACT_FIELDS)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

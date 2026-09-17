@@ -118,13 +118,36 @@ def _scrub(row: dict[str, Any], include_contacts: bool) -> dict[str, Any]:
     return {k: v for k, v in row.items() if k not in _CONTACT_FIELDS}
 
 
+# 사업명이 담기는 필드는 서비스마다 다르다. 누리장터는 bidNtceNm 이 아니라
+# ntceNm 을 쓰고, 사전규격은 prdctClsfcNoNm 계열이다. 하나만 보면 키워드
+# 필터가 조용히 0건을 반환한다.
+_TITLE_FIELDS = (
+    "bidNtceNm",      # 입찰공고·낙찰
+    "ntceNm",         # 누리장터 민간입찰
+    "prdctClsfcNoNm", # 사전규격 품명
+    "prdctNm",
+    "cntrctNm",       # 계약
+    "reqNm",          # 조달요청
+    "bsnsNm",
+)
+
+
 def _match_keyword(row: dict[str, Any], keyword: str) -> bool:
     needle = keyword.lower()
-    for field in ("bidNtceNm", "prdctClsfcNoNm", "cntrctNm", "reqNm", "prdctNm"):
+    for field in _TITLE_FIELDS:
         value = row.get(field)
         if value and needle in str(value).lower():
             return True
     return False
+
+
+def title_of(row: dict[str, Any]) -> str | None:
+    """서비스별 사업명 필드를 하나로 정규화해 준다."""
+    for field in _TITLE_FIELDS:
+        value = row.get(field)
+        if value:
+            return str(value)
+    return None
 
 
 @mcp.tool(
@@ -175,7 +198,16 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
         rows = [r for r in rows if _match_keyword(r, params.keyword)]
         filtered_by_keyword = True
 
-    rows = [_scrub(r, params.include_contacts) for r in rows]
+    # 사업명 필드가 서비스마다 달라 호출자가 매번 다른 키를 찾아야 했다.
+    # 정규화한 title 을 덧붙인다 (원본 필드는 그대로 둔다).
+    scrubbed = []
+    for row in rows:
+        item = _scrub(row, params.include_contacts)
+        title = title_of(row)
+        if title and "title" not in item:
+            item = {"title": title, **item}
+        scrubbed.append(item)
+    rows = scrubbed
 
     notes = []
     if filtered_by_keyword:
