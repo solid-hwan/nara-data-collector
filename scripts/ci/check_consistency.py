@@ -18,7 +18,11 @@ import os
 import re
 import subprocess
 import sys
-import tomllib
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:  # Python 3.10 — requires-python 하한
+    import tomli as tomllib  # type: ignore[no-redef]
 
 FAIL: list[str] = []
 

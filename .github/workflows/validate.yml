@@ -20,18 +20,17 @@ jobs:
       # 이 설치가 없으면 server.py 가 CI 에서 한 번도 import 되지 않는다.
       # compileall 은 문법만 보므로 FastMCP import 오류나 pydantic Field
       # 시그니처 오류가 green 으로 통과한다.
-      - name: MCP 의존성 설치
-        run: python3 -m pip install --quiet "mcp<2" "pydantic>=2"
+      # tomli: tomllib 은 3.11+ 이므로 3.10 에서 pyproject 검증에 필요하다.
+      - name: 의존성 설치
+        run: python3 -m pip install --quiet "mcp<2" "pydantic>=2" tomli pyyaml
 
       - name: 설정 파일 파싱 검증
         run: |
           python3 -m json.tool < .mcp.json > /dev/null
           python3 -m json.tool < server.json > /dev/null
           python3 -m json.tool < docs/claude-desktop-config.template.json > /dev/null
-          python3 -c "import tomllib; tomllib.load(open('pyproject.toml','rb'))"
-          python3 -c "import sys,yaml" 2>/dev/null && \
-            python3 -c "import yaml; yaml.safe_load(open('smithery.yaml'))" || \
-            echo "(pyyaml 없음 — smithery.yaml 검증 생략)"
+          python3 scripts/ci/load_toml.py pyproject.toml
+          python3 -c "import yaml; yaml.safe_load(open('smithery.yaml'))"
 
       - name: shell 스크립트 문법
         run: |
