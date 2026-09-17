@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-17
+
+추천 룰 구현 + 에이전트 현행화.
+
+### Added
+- **적합도 점수** (`src/koneps_mcp/scoring.py`) — `docs/sionlab-profile.md` 의
+  키워드 가중치·기관/예산 보너스·대형 SI 감점을 코드로 옮긴 단일 구현
+- `koneps_search` 의 `rank_by_fit` — 점수 정렬 + 건별 `_match`(점수·근거)
+- `koneps_search` 의 `max_pages` — 다중 페이지 순회 (하루 500건 넘는 축 대응)
+- `koneps_rules` tool — 적용 중인 룰 확인 (API 호출 없음)
+- 점수 테스트 22개
+
+### Fixed
+- **영문 약어 오탐**: `AI` 부분문자열 매칭으로 KAIST 해외연수·AIoT 기기가
+  AI 사업으로 상위에 왔다. 4자 이하 ASCII 용어에 단어 경계를 적용했다
+  (한글은 경계가 없어 부분문자열 유지 — "통합문서자동화사업"을 놓치기 때문)
+- **보너스 단독 가산**: 키워드 0점인데 기관·예산 보너스만으로 급식 구입이
+  물품 1위였다. 보너스는 역량 매칭이 있을 때만 적용한다
+- `mcp-operator` 에이전트가 자체 MCP tool 3개를 **호출할 수 없었다** (tools 누락)
+- `verifier` 에이전트가 존재하지 않는 `db/schema.sql` 을 검사해 항상 실패했다
+
 ## [0.2.0] — 2026-09-17
 
 물품·용역 외 업무구분까지 커버리지 확장 + 엔드포인트 현행화.
