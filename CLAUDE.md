@@ -5,7 +5,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 프로젝트 목적
 나라장터(KONEPS/G2B) 데이터를 **MCP(Model Context Protocol) 경유**로 조회하고, 향후 자체 비즈니스 로직(추천/매칭/스코어링)을 얹을 플랫폼의 기반.
 
-**현재 단계**: 공개 MCP 2개(`nara-jangteo`, `data-go-mcp.pps-narajangteo`)의 stable running 확보. 자체 MCP/비즈니스 로직/UI는 **아직 스코프 밖**.
+**현재 단계** (v0.2.0, 2026-09-17): MCP 서버 3개.
+
+- `koneps-sionlab` — **자체 구현** (`src/koneps_mcp/`). 물품·용역에 한정되지 않고
+  공사·외자·기타공고·사전규격·조달요청·계약과정통합·누리장터까지 조회한다.
+- `nara-jangteo`, `data-go-mcp.pps-narajangteo` — 서드파티(uvx). 유지하되
+  후자는 2025-09 이후 업스트림 릴리스가 없다.
+
+비즈니스 로직(추천·매칭·스코어링)과 UI 는 여전히 **스코프 밖**이다.
+
+**자체 MCP 수정 시 지켜야 할 것**
+- 엔드포인트 네임스페이스(`/ad/`·`/as/`·`/ao/`)는 서비스마다 다르다.
+  `src/koneps_mcp/g2b.py` 의 `SERVICES` 가 정본이며 전부 실측으로 확인했다.
+  "통일"하려는 리팩터는 `tests/test_g2b.py` 가 막는다.
+- 담당자 연락처는 tool 응답에서 기본 제외한다(`_CONTACT_FIELDS`).
+  응답에 실제로 담당자 실명·전화·이메일이 온다.
+- 테스트는 API 를 호출하지 않는다. `urlopen` 을 스텁으로 바꿔 일일 한도를
+  쓰지 않으므로, 새 기능에도 같은 방식을 유지한다.
 
 ## Architecture — Big Picture
 
@@ -150,13 +166,27 @@ jq '._meta' data/raw/*.json                       # 호출 메타데이터 점�
 
 ## Out of Scope (지금은 하지 않음)
 
-- 자체 MCP 개발 (3단계)
 - 웹/앱 UI
-- 비즈니스 추천 로직
+- 비즈니스 추천 로직 (매칭·스코어링)
 - 자사 DB 조인
+- `db/schema.sql` — 아직 없다. `.claude/agents/verifier.md` 의 정적 검사 항목에
+  들어 있으나 현재는 실패한다
+
+## 개인정보 취급
+
+나라장터 응답에는 수요기관 담당자 실명·전화·이메일이 포함된다
+(`ntceInsttOfclNm`·`ntceInsttOfclTel`·`ofclNm`·`fnlSucsfCorpContactTel` 등).
+
+- 가공 산출물(`data/processed`·`reports`·`analysis`)은 `.gitignore` 대상이다.
+  공개 저장소에 올리지 않는다.
+- CI 가 추적 파일의 전화번호 패턴과 영업 산출물 추적 여부를 검사한다.
+- 회사 메타데이터를 인라인 하드코딩한 일회성 스크립트 3개도 제외 대상이다.
 
 ## 참고 링크
 
 - 입찰공고 API: https://www.data.go.kr/data/15129394/openapi.do
+- 낙찰정보 API: https://www.data.go.kr/data/15129397/openapi.do
+- 사전규격 API: https://www.data.go.kr/data/15129437/openapi.do
+- 누리장터 민간입찰 API: https://www.data.go.kr/data/15129456/openapi.do
 - Datajang MCP: https://github.com/Datajang/narajangteo_mcp_server
 - Koomook MCP: https://github.com/Koomook/data-go-mcp-servers
