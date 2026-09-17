@@ -64,6 +64,13 @@ data/analysis/**
 !data/reports/README.md
 !data/analysis/README.md
 
+# 회사 메타데이터를 인라인 하드코딩한 일회성 스크립트 (2026-09-17).
+# 실제 회사명·대표자명·전화번호·사업자등록번호가 소스에 박혀 있어 공개 대상이 아니다.
+# 파이프라인 정본은 call_calendar_auto.py (CSV 입력, 개인정보 0건)다.
+scripts/call_calendar.py
+scripts/call_calendar_0618.py
+scripts/append_contacts_0617.py
+
 # 빌드 결과
 dist/
 build/
