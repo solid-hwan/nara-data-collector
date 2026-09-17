@@ -29,7 +29,10 @@ fi
 
 export PYTHONPATH="${PROJECT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 
-# mcp<2 상한: mcp 2.0 이 mcp.server.fastmcp 경로를 제거했다.
-exec uv run --quiet --no-project \
+# --python 3.11: 코드가 `X | None` (PEP 604) 문법을 쓰므로 3.10 미만에서는
+#   import 시점에 TypeError 가 난다. 시스템 python 이 3.9 인 환경을 대비해 고정한다.
+# mcp<2: mcp 2.0 이 mcp.server.fastmcp 경로를 제거했다. 업스트림이 상한을
+#   선언하지 않아 uv 가 2.x 를 끌어오므로 여기서 막는다.
+exec uv run --quiet --no-project --python 3.11 \
   --with "mcp<2" --with "pydantic>=2" \
   python -m koneps_mcp.server
