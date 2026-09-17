@@ -71,6 +71,14 @@ scripts/call_calendar.py
 scripts/call_calendar_0618.py
 scripts/append_contacts_0617.py
 
+# 회사 내부 전략 문서 (2026-09-17). 이 저장소는 '나라장터 MCP 도구'이고
+# 정부지원사업 진입 전략·사업자등록은 도구 사용과 무관한 내부 자료다.
+# docs/sionlab-profile.md 는 recommend_bids_for_dept 툴이 상정하는
+# 프로필이므로 공개 대상에서 제외하지 않는다.
+docs/rnd-programs/
+docs/business-registration/
+docs/_html/
+
 # 빌드 결과
 dist/
 build/
