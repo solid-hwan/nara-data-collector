@@ -29,6 +29,9 @@ _CONTACT_FIELDS = frozenset(
         "dmndInsttOfclNm", "dmndInsttOfclTel", "dmndInsttOfclEmailAdrs",
         "fnlSucsfCorpOfclNm", "fnlSucsfCorpContactTel", "fnlSucsfCorpCeoNm",
         "bidprcCorpCeoNm", "scsbidCorpCeoNm", "corpCeoNm", "ofclNm", "ofclTel",
+        # 일반 이름 — RFP 본문 추출 계열이 contacts[] 로 이런 키를 쓴다.
+        # 이 서버가 직접 만들지는 않지만 필드명이 흔해 방어적으로 넣는다.
+        "tel", "email", "telNo", "emailAdrs", "phone", "mobile",
     }
 )
 
