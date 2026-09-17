@@ -57,12 +57,13 @@ data/raw/**/*.json
 # 디렉터리 자체를 제외하면 그 안의 파일은 !패턴으로 되살릴 수 없으므로
 # (git은 제외된 디렉터리를 아예 탐색하지 않는다), 와일드카드로 내용만 제외하고
 # README.md 는 명시적으로 되살린다.
-data/processed/**
-data/reports/**
-data/analysis/**
-!data/processed/README.md
-!data/reports/README.md
-!data/analysis/README.md
+# README 까지 전부 제외한다. data/reports/README.md 에는 담당자 전화 12건과
+# 회사명이 있고, data/processed/README.md 는 로컬 CSV 를 링크해 공개 시
+# 깨진다. data/analysis/README.md 는 아예 존재하지 않는다.
+# data/raw/ 하위 문서는 개인정보가 없어 추적한다 (*.json 만 제외).
+data/processed/
+data/reports/
+data/analysis/
 
 # 회사 메타데이터를 인라인 하드코딩한 일회성 스크립트 (2026-09-17).
 # 실제 회사명·대표자명·전화번호·사업자등록번호가 소스에 박혀 있어 공개 대상이 아니다.

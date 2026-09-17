@@ -83,9 +83,9 @@ KONEPS_sionlab/
 |---|---|
 | 프로젝트 첫 셋업 | [`README.md`](README.md) §"빠른 시작" |
 | 작업 규칙·아키텍처 이해 | [`CLAUDE.md`](CLAUDE.md) |
-| **이번 주 영업 후보 보기** | [`data/reports/README.md`](data/reports/README.md) |
+| **이번 주 영업 후보 보기** | `data/reports/` — 로컬 전용(개인정보 포함, 비공개) |
 | **낙찰 데이터 원본 직접 보기** | [`data/raw/README.md`](data/raw/README.md) |
-| 가공된 CSV 받기 | [`data/processed/README.md`](data/processed/README.md) |
+| 가공된 CSV 받기 | `data/processed/` — 로컬 전용. `scripts/` 재실행으로 생성 |
 | MCP tool 시그니처 | [`docs/mcp-tools.md`](docs/mcp-tools.md) |
 | 새 키워드/기관 추가 | [`scripts/README.md`](scripts/README.md) |
 | 에이전트 호출 방식 | [`.claude/agents/README.md`](.claude/agents/README.md) |

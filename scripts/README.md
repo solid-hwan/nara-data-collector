@@ -66,7 +66,8 @@ exit code 0 = 통과, 1 = 실패. CI/pre-commit hook 연동 가능. 폴더 정�
 
 ## 명명 규칙 (산출 CSV)
 
-2026-05-08 정규화 완료. 자세한 카탈로그는 [`../data/processed/README.md`](../data/processed/README.md).
+2026-05-08 정규화 완료. 산출물 카탈로그는 `data/processed/README.md` 에 있으나
+로컬 전용이다(공개 저장소에서 제외).
 
 ---
 
@@ -74,5 +75,4 @@ exit code 0 = 통과, 1 = 실패. CI/pre-commit hook 연동 가능. 폴더 정�
 
 - [`../PROJECT_MAP.md`](../PROJECT_MAP.md) — 데이터 흐름 전체도
 - [`../data/raw/README.md`](../data/raw/README.md) — 입력 데이터 명세
-- [`../data/processed/README.md`](../data/processed/README.md) — 출력 데이터 카탈로그
 - [`../docs/mcp-tools.md`](../docs/mcp-tools.md) — MCP tool 시그니처
