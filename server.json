@@ -4,7 +4,7 @@
   "displayName": "나라장터 MCP (KONEPS)",
   "description": "한국 나라장터(KONEPS/G2B) 공공조달 데이터를 Claude로 자연어 질의. 입찰공고, 낙찰정보, 계약정보, RFP 파일 추출 지원.",
   "descriptionEn": "Query Korean government procurement (KONEPS/G2B) data with Claude via MCP.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "KKHWAN",
     "email": "lee.kkhwan@gmail.com"
@@ -32,6 +32,14 @@
   ],
   "servers": [
     {
+      "name": "koneps-sionlab",
+      "command": "bash",
+      "args": ["scripts/run-own-mcp.sh"],
+      "env": {
+        "NARA_API_KEY": "${NARA_API_KEY}"
+      }
+    },
+    {
       "name": "nara-jangteo",
       "command": "bash",
       "args": ["scripts/run-mcp.sh", "nara-jangteo"],
@@ -50,6 +58,14 @@
     }
   ],
   "tools": [
+    {
+      "name": "koneps_search",
+      "description": "나라장터 전 업무구분 조회 — 물품·용역·공사·외자·기타공고, 사전규격, 조달요청, 계약, 누리장터 민간입찰"
+    },
+    {
+      "name": "koneps_coverage",
+      "description": "조회 가능한 서비스·업무구분 조합과 활용신청 번호 (API 호출 없음)"
+    },
     {
       "name": "get_bids_by_keyword",
       "description": "키워드로 입찰공고 + 사전규격 검색 (최근 N일)"

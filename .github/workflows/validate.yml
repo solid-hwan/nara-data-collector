@@ -71,6 +71,14 @@ jobs:
           [ "$FOUND" -eq 0 ] || exit 1
           echo "OK"
 
+      - name: Python 문법
+        run: |
+          python3 -m compileall -q scripts src
+          echo "OK"
+
+      - name: 단위 테스트 (API 호출 없음)
+        run: python3 -m unittest discover -s tests -v
+
       - name: 필수 문서 존재 확인
         run: |
           for f in LICENSE README.md CLAUDE.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md CHANGELOG.md .env.example; do
