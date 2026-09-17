@@ -42,6 +42,35 @@ jobs:
           fi
           echo "OK"
 
+      - name: 개인정보 누출 점검
+        run: |
+          # 나라장터 API 응답에는 수요기관 담당자 실명·전화·이메일이 포함된다
+          # (ntceInsttOfclTel, fnlSucsfCorpContactTel 등). 가공 산출물이 실수로
+          # 추적되면 공개 저장소에 개인정보가 박히므로 추적 파일 전체를 검사한다.
+          # 검사 대상은 '추적되는 파일'뿐이다 — 로컬 작업물은 건드리지 않는다.
+          FOUND=0
+
+          # 전화번호 (02-1234-5678 / 031-123-4567 / 010-1234-5678)
+          # 이 워크플로 자신은 패턴 문자열을 담고 있으므로 제외한다.
+          HITS="$(git ls-files -z | xargs -0 --no-run-if-empty \
+                    grep -lE '0[0-9]{1,2}-[0-9]{3,4}-[0-9]{4}' 2>/dev/null \
+                  | grep -v '^.github/workflows/validate.yml$' || true)"
+          if [ -n "$HITS" ]; then
+            echo "⚠️ 추적 파일에 전화번호 패턴이 있습니다:"
+            echo "$HITS"
+            FOUND=1
+          fi
+
+          # 영업 산출물 디렉터리가 추적되고 있는지 (.gitignore 무력화 감지)
+          if git ls-files | grep -E '^data/(processed|reports|analysis)/' \
+               | grep -v 'README.md$' ; then
+            echo "⚠️ 위 영업 산출물이 추적되고 있습니다 (.gitignore 확인)"
+            FOUND=1
+          fi
+
+          [ "$FOUND" -eq 0 ] || exit 1
+          echo "OK"
+
       - name: 필수 문서 존재 확인
         run: |
           for f in LICENSE README.md CLAUDE.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md CHANGELOG.md .env.example; do
