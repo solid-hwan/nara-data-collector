@@ -162,13 +162,9 @@ bash scripts/setup-claude-desktop.sh  # Desktop 재시작 필요
 
 **① 공공데이터포털 메인** — <https://www.data.go.kr/>
 
-![공공데이터포털 메인](./docs/images/00-portal-main.png)
-
 우상단 **회원가입** → 본인인증 → 가입 완료.
 
 **② 나라장터 API 페이지** — <https://www.data.go.kr/data/15129394/openapi.do>
-
-![API 상세 페이지](./docs/images/01-api-detail-page.png)
 
 확인할 메타 정보:
 
@@ -179,8 +175,6 @@ bash scripts/setup-claude-desktop.sh  # Desktop 재시작 필요
 | 트래픽 | 개발계정 **1,000/일** | 초기 충분 |
 
 **③ 우상단 파란 [활용신청] 버튼 클릭**
-
-![활용신청 버튼](./docs/images/02-apply-button.png)
 
 신청서에 활용목적 한 줄 작성(예: "조달 데이터 분석 MCP 도구") → 제출 → **자동승인**.
 
@@ -197,7 +191,9 @@ NARA_PRESPEC_API_KEY=abc/def+...  # 동일 키로 우선 시도
 chmod 600 .env                    # 권한 제한
 ```
 
-📖 **상세 가이드**: [`docs/data-portal-guide.md`](./docs/data-portal-guide.md) — 트러블슈팅 포함
+> **서비스마다 활용신청이 따로 필요합니다.** 입찰공고정보서비스 키로 사전규격·낙찰정보까지
+> 되는 경우가 있지만 보장되지 않습니다. 같은 키로 먼저 시도하고, 인증 오류가 나면 해당
+> 서비스를 개별 신청하세요. 아래 [트러블슈팅](#-트러블슈팅)의 엔드포인트 표를 함께 보세요.
 
 ---
 
@@ -251,7 +247,7 @@ Desktop 대화창에서 자연어로 요청:
 ### 한계점
 Desktop 에는 서브에이전트 개념이 없습니다. 대량 수집·스키마 설계 같은 복잡한 워크플로우는 Claude Code 를 사용하세요.
 
-세부 가이드: [`docs/claude-desktop-setup.md`](./docs/claude-desktop-setup.md)
+설정 자동 병합은 `scripts/setup-claude-desktop.sh` 가 처리합니다 (macOS·Windows·WSL 자동 감지, 기존 설정 병합, 타임스탬프 백업).
 
 ---
 
@@ -278,35 +274,49 @@ Desktop 에는 서브에이전트 개념이 없습니다. 대량 수집·스키�
 
 ## 📂 프로젝트 구조
 
+> 📍 **전체 인덱스는 [`PROJECT_MAP.md`](PROJECT_MAP.md) 참조** — 각 폴더는 자신의 README를 가진다.
+
 ```
 KONEPS_sionlab/
 │
+├── PROJECT_MAP.md             ← 🆕 전체 폴더/데이터 흐름 한 장 인덱스
 ├── .mcp.json                  ← Claude Code 가 자동 로드 (키 0개)
 ├── .env.example               ← 환경변수 템플릿 (git 포함)
 ├── .env                       ← 실제 키 (git 제외, 직접 생성)
 │
-├── scripts/
-│   ├── run-mcp.sh             ← MCP 기동 래퍼 (Code/Desktop 공용)
-│   └── setup-claude-desktop.sh ← Desktop 설정 자동 병합기
+├── scripts/                   ← 🆕 README 추가
+│   ├── README.md              ← 스크립트 카탈로그/입출력
+│   ├── run-mcp.sh             ← MCP 기동 래퍼
+│   ├── setup-claude-desktop.sh ← Desktop 설정 자동 병합기
+│   ├── keyword_search.py      ← 키워드 매칭 (9개 카테고리)
+│   ├── winner_match.py        ← 기관 매칭
+│   ├── match_phase3.py        ← 부서별 점수
+│   └── winner_collab_score.py ← 협업 후보 스코어링
 │
 ├── .claude/
-│   └── agents/                ← 에이전트 팀 정의 (Claude Code 전용)
-│       ├── orchestrator.md
-│       ├── mcp-operator.md    ← MCP tool 호출 권한 보유
-│       ├── data-modeler.md
-│       ├── verifier.md
-│       └── docs-writer.md
+│   └── agents/                ← 에이전트 팀 (5개) + README
+│       └── README.md          ← 🆕 에이전트 카탈로그
 │
-├── docs/
-│   ├── data-portal-guide.md   ← 공공데이터포털 상세 가이드
-│   ├── mcp-tools.md           ← tool 카탈로그 (실측 시그니처)
-│   ├── claude-desktop-setup.md ← Desktop 설치 세부
+├── docs/                      ← 🆕 README 추가
+│   ├── README.md              ← 문서 인덱스
+│   ├── mcp-tools.md           ← tool 카탈로그
 │   ├── claude-desktop-config.template.json
-│   └── images/                ← 포털 스크린샷
+│   ├── sionlab-profile.md     ← Sion Lab 회사 프로필
+│   └── research/              ← 외부 리서치 노트
+│       ├── README.md
+│       ├── naver-cafe-narajangteo-survey.md
+│       └── cafes/README.md    ← 카페별 분석 인덱스
 │
 ├── data/
-│   └── raw/                   ← MCP 원시 응답 캐시 (git 제외)
-│       └── README.md          ← 명명 규칙
+│   ├── raw/                   ← MCP 원시 응답 (git 제외)
+│   │   ├── README.md          ← 명명 규칙
+│   │   ├── nara-jangteo/      ← 🆕 README + 3 tool 폴더
+│   │   ├── data-go-mcp/       ← 🆕 README + 4 tool 폴더
+│   │   └── naver-cafe/        ← 🆕 README + 카페별 폴더
+│   ├── processed/             ← 🆕 README + 가공 CSV/MD
+│   │   └── README.md          ← 9개 산출물 카탈로그
+│   └── reports/               ← 영업 리포트 (사람 큐레이션)
+│       └── README.md
 │
 ├── db/                        ← (2단계) SQLite 스키마 예정
 │
@@ -356,7 +366,46 @@ KONEPS_sionlab/
 | **`get_bid_detail` 실패** | 업스트림 버그. `search_bid_announcements` 로 대체 조회 |
 | **일일 호출 한도 초과** | 개발계정 1,000/일. `data/raw/` 캐시 먼저 확인 또는 운영계정 승인 |
 
-더 자세한 진단: [`docs/data-portal-guide.md#자주-발생하는-문제`](./docs/data-portal-guide.md#5-자주-발생하는-문제) · [`docs/claude-desktop-setup.md`](./docs/claude-desktop-setup.md)
+### ⚠️ 엔드포인트 마이그레이션 (2026-09-17 실측)
+
+조달청이 입찰공고정보서비스 경로를 버전 접미사(`...Service02`, `...Service04`) 방식에서
+`/ad/` 네임스페이스로 옮겼습니다. **구 경로는 응답하지 않습니다.**
+
+| 경로 | 실측 결과 |
+|---|---|
+| `…/1230000/BidPublicInfoService04/getBidPblancListInfoServc` | ❌ **HTTP 400 — 폐기됨** |
+| `…/1230000/ad/BidPublicInfoService/getBidPblancListInfoServc` | ✅ 200 `resultCode=00` |
+| `…/1230000/ad/BidPublicInfoService/getBidPblancListInfoServcPPSSrch` | ✅ 200 — 공고명·기관·금액 검색 계열 |
+| `…/1230000/ad/BidPublicInfoService/getBidPblancListInfoEtc` | ✅ 200 — **기타공고** |
+| `…/1230000/ao/HrcspSsstndrdInfoService/getPublicPrcureThngInfoServc` | ✅ 200 — 사전규격 (`/ao/` 주의) |
+| `…/1230000/ao/CntrctProcssIntgOpenService/getCntrctProcssIntgOpenServc` | ✅ 200 — 계약과정통합 |
+| `…/1230000/ao/PubDataOpnStdService/getDataSetOpnStdScsbidInfo` | ✅ 200 — 낙찰 (개방표준, `sucsfYn` 포함) |
+
+서비스 계열에 따라 `/ad/` 와 `/ao/` 가 갈립니다. 임의로 바꿔 쓰면 404 가 아니라 **400** 이 옵니다.
+
+**오류 응답 두 종류를 구분하세요** — 원인이 완전히 다릅니다.
+
+| 응답 본문 | 의미 | 조치 |
+|---|---|---|
+| `OpenAPI_ServiceResponse.cmmMsgHeader` 에 `NO_OPENAPI_SERVICE_ERROR` / `returnReasonCode=12` | **경로가 틀렸다** (서비스명·오퍼레이션명 오타, 폐기된 버전) | 경로를 공식 명세에서 재확인. 키 문제가 아님 |
+| `nkoneps.com.response.ResponseError` 에 `resultCode=08 필수값 입력 에러` | 경로는 맞고 **필수 파라미터가 빠졌다** | 서비스별 필수 파라미터(`inqryDiv`, 기간 필드명) 확인 |
+| `resultCode=03` | 정상 응답이나 **데이터 없음** | 오류가 아님. 기간·조건을 넓힐 것 |
+
+### ⚠️ 업스트림 의존성 상태 (2026-09-17 확인)
+
+이 저장소는 서드파티 MCP 서버 2개를 `uvx` 로 실행합니다. 코드가 아니라 **배선**이므로
+업스트림 상태가 그대로 영향을 줍니다.
+
+| 패키지 | 최신 버전 | 최근 릴리스 | 상태 |
+|---|---|---|---|
+| `nara-mcp-server` | 1.3.3 | 2026-04-09 | 유지 중 |
+| `data-go-mcp.pps-narajangteo` | 0.1.1 | **2025-09-15** | ⚠️ 1년 이상 릴리스 없음. PyPI 프로젝트 URL이 `yourusername` 플레이스홀더 |
+
+- `scripts/run-mcp.sh` 는 `data-go-mcp.pps-narajangteo@latest` 를 씁니다. 업스트림이 예고 없이
+  바뀌면 즉시 영향을 받으므로, 재현성이 필요하면 버전을 고정하세요.
+- **`mcp<2` 상한은 유지해야 합니다.** 두 업스트림 모두 `mcp>=1.x` 로 상한이 없어 `uvx` 가
+  `mcp` 2.x(2026-09-07 기준 2.2.0)를 끌어오는데, mcp 2.0 이 `mcp.server.fastmcp` 경로를
+  제거해 기동에 실패합니다.
 
 ---
 
