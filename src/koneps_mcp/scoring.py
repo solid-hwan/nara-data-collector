@@ -73,9 +73,19 @@ _AMOUNT_FIELDS = (
     "sumAmt",
 )
 
-_TITLE_FIELDS = (
-    "bidNtceNm", "ntceNm", "prdctClsfcNoNm", "prdctNm", "cntrctNm", "reqNm", "bsnsNm",
+# 사업명이 담기는 필드는 서비스마다 다르다. 이 튜플이 **정본**이며
+# server.py 가 import 해서 쓴다 — 양쪽에 복사하면 서비스를 추가할 때 한쪽만
+# 고쳐 드리프트한다(누리장터 ntceNm 에서 실제로 겪었다).
+TITLE_FIELDS = (
+    "bidNtceNm",      # 입찰공고·낙찰
+    "ntceNm",         # 누리장터 민간입찰
+    "prdctClsfcNoNm", # 사전규격 품명
+    "prdctNm",
+    "cntrctNm",       # 계약
+    "reqNm",          # 조달요청
+    "bsnsNm",
 )
+_TITLE_FIELDS = TITLE_FIELDS  # 하위 호환
 _AGENCY_FIELDS = ("ntceInsttNm", "dmndInsttNm", "dminsttNm")
 
 

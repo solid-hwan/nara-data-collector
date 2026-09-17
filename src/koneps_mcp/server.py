@@ -116,6 +116,16 @@ class SearchInput(BaseModel):
             "붙인다. 점수는 필터가 아니라 정렬 신호이므로 낮은 점수도 반환한다."
         ),
     )
+    min_fit_score: float = Field(
+        default=0.0,
+        ge=0.0,
+        le=20.0,
+        description=(
+            "rank_by_fit 과 함께 쓸 때, 이 점수 미만인 건을 제외한다. 기본 0 은 "
+            "전부 반환(정렬만) — 표현이 다른 공고를 하드 컷오프로 놓치지 않기 "
+            "위해서다. 상위만 보려면 2.0 정도부터 시작하세요."
+        ),
+    )
     max_pages: int = Field(
         default=1,
         ge=1,
@@ -144,18 +154,9 @@ def _scrub(row: dict[str, Any], include_contacts: bool) -> dict[str, Any]:
     return {k: v for k, v in row.items() if k not in _CONTACT_FIELDS}
 
 
-# 사업명이 담기는 필드는 서비스마다 다르다. 누리장터는 bidNtceNm 이 아니라
-# ntceNm 을 쓰고, 사전규격은 prdctClsfcNoNm 계열이다. 하나만 보면 키워드
-# 필터가 조용히 0건을 반환한다.
-_TITLE_FIELDS = (
-    "bidNtceNm",      # 입찰공고·낙찰
-    "ntceNm",         # 누리장터 민간입찰
-    "prdctClsfcNoNm", # 사전규격 품명
-    "prdctNm",
-    "cntrctNm",       # 계약
-    "reqNm",          # 조달요청
-    "bsnsNm",
-)
+# 사업명 필드 정본은 scoring.TITLE_FIELDS 다. 여기서 다시 선언하면 점수
+# 계산과 키워드 필터가 서로 다른 필드를 보게 된다.
+_TITLE_FIELDS = scoring.TITLE_FIELDS
 
 
 def _match_keyword(row: dict[str, Any], keyword: str) -> bool:
@@ -229,7 +230,15 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
             "next_action": "koneps_coverage 로 서비스·업무구분 조합을 확인한 뒤 다시 조회하세요.",
         }
 
-    assert result is not None  # max_pages >= 1 이므로 최소 1회 순회한다
+    if result is None:
+        # max_pages >= 1 이라 도달하지 않지만, assert 로 두면 python -O 에서
+        # 사라지고 아래 8개 subscript 가 TypeError 로 터진다. 이 함수의 다른
+        # 모든 경로는 구조화된 오류를 반환하므로 여기도 맞춘다.
+        return {
+            "status": "error",
+            "message": "조회 결과를 얻지 못했습니다.",
+            "next_action": "기간·서비스·업무구분을 확인한 뒤 다시 조회하세요.",
+        }
     filtered_by_keyword = False
     if params.keyword:
         rows = [r for r in rows if _match_keyword(r, params.keyword)]
@@ -249,7 +258,7 @@ async def koneps_search(params: SearchInput) -> dict[str, Any]:
     # 적합도 정렬은 스크러빙 뒤에 한다 — 점수 계산은 사업명·기관명·금액만 보므로
     # 연락처가 빠져도 결과가 달라지지 않는다.
     if params.rank_by_fit:
-        rows = scoring.rank(rows)
+        rows = scoring.rank(rows, min_score=params.min_fit_score)
 
     notes = []
     if params.rank_by_fit:

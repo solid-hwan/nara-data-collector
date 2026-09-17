@@ -13,7 +13,6 @@ import json
 import sys
 import unittest
 import urllib.error
-import urllib.parse
 from pathlib import Path
 from unittest import mock
 
