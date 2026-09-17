@@ -21,7 +21,7 @@ labels: bug
 - OS:
 - `uvx --version`:
 - Claude Code / Desktop 버전:
-- MCP 서버: `nara-jangteo` / `data-go-mcp.pps-narajangteo` / 둘 다
+- MCP 서버: `koneps-sionlab` (자체) / `nara-jangteo` / `data-go-mcp.pps-narajangteo` / 여러 개
 
 ## 로그
 ```
