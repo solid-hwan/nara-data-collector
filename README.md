@@ -1,8 +1,8 @@
-# 나라장터 데이터 MCP 0.5.0
+# 나라장터 데이터 수집기 0.5.1
 
-**공고·발주계획 검색과 수집**을 위한 MIT 라이선스 Python 도구입니다. 공개 제품명은 나라장터 데이터 MCP, 저장소·패키지·명령은 `nara-data-mcp`입니다. 제작자·저작권자는 SIONLAB입니다.
+**공고·발주계획 검색과 수집**을 위한 MIT 라이선스 Python 도구입니다. 공개 제품명은 나라장터 데이터 수집기, 저장소는 `nara-data-collector`이며 기존 패키지·명령 `nara-data-mcp`는 호환성을 위해 유지합니다. 제작자·저작권자는 SIONLAB입니다.
 
-Python CLI만으로 검색·저장·Excel 출력을 사용할 수 있습니다. MCP를 지원하는 AI 클라이언트와 연결할 수도 있습니다. 특정 AI 서비스, 시온랩 계정, 개인 작업 공간 없이 독립 실행하며, 실제 조달 API 조회에는 사용자가 발급받은 공공데이터포털 키와 해당 API 이용 권한이 필요합니다.
+Python CLI만으로 검색·저장·Excel 출력을 사용할 수 있습니다. 특정 AI 서비스, 시온랩 계정, 개인 작업 공간 없이 독립 실행하며, 실제 조달 API 조회에는 사용자가 발급받은 공공데이터포털 키와 해당 API 이용 권한이 필요합니다.
 
 [빠른 시작](#빠른-시작) · [MCP 연결](#mcp-연결) · [활용 방법](docs/recipes.md) · [입출력 계약](docs/contract.md) · [지원 범위](docs/coverage.md) · [전환 안내](docs/migration.md) · [기여하기](CONTRIBUTING.md)
 
@@ -41,8 +41,8 @@ flowchart LR
 Python 3.11 이상이 필요합니다. 아래 명령은 Linux/macOS 셸 기준이며 CI는 Ubuntu의 Python 3.11·3.12를 사용합니다. Windows 잠금 코드는 포함하지만 네이티브 Windows 전체 흐름은 미검증입니다. WSL에서는 아래 명령을 사용할 수 있습니다.
 
 ```bash
-git clone https://github.com/solid-hwan/nara-data-mcp.git
-cd nara-data-mcp
+git clone https://github.com/solid-hwan/nara-data-collector.git
+cd nara-data-collector
 python3 setup-lab.py
 .venv/bin/nara-data-mcp --help
 .venv/bin/python -m nara_data_mcp coverage
@@ -51,7 +51,7 @@ python3 setup-lab.py
 
 `setup-lab.py`는 이 폴더의 `.venv`만 준비합니다. 의존성 설치에는 네트워크가 필요하지만 `coverage`와 가상 예제는 API 키·외부 조달 호출 없이 실행됩니다. 가상 예제는 공사 공고와 기관 발주계획 두 사례의 JSONL·CSV·Excel을 생성하고 원문을 다시 읽어 대조합니다. 예제 출력은 새 임시 폴더를 사용하세요.
 
-[Releases](https://github.com/solid-hwan/nara-data-mcp/releases)에서 검증 ZIP을 받아 압축을 푼 후 `python3 setup-lab.py`를 실행해도 됩니다. PyPI 배포는 하지 않으므로 `pip install nara-data-mcp`를 설치 방법으로 안내하지 않습니다.
+[Releases](https://github.com/solid-hwan/nara-data-collector/releases)에서 검증 ZIP을 받아 압축을 푼 후 `python3 setup-lab.py`를 실행해도 됩니다. PyPI 배포는 하지 않으므로 `pip install nara-data-mcp`를 설치 방법으로 안내하지 않습니다.
 
 기존 가상환경을 직접 관리하는 경우:
 
@@ -134,7 +134,7 @@ coverage = service.coverage()  # 인증·외부 호출 없음
 
 0.5.0은 명칭 변경판입니다. 기존 `sionlab-procurement`, `python -m sionlab_procurement`, MCP `sionlab_search/detail/collect/coverage/job_status` 호출을 유지합니다. MCP 목록에는 새 이름만 표시합니다. 0.4.0 작업 DB·예산·Excel 형식은 그대로 이어 씁니다.
 
-기존 패키지와 파일이 겹치므로 새 가상환경에 설치하고 같은 작업 폴더를 지정하는 방법을 권장합니다. 더 오래된 KONEPS 제품의 추천·첨부 분석·설정은 별도 계약입니다. [전환 안내](docs/migration.md)와 보존된 [v0.3.1](https://github.com/solid-hwan/nara-data-mcp/tree/v0.3.1)을 확인하세요.
+기존 패키지와 파일이 겹치므로 새 가상환경에 설치하고 같은 작업 폴더를 지정하는 방법을 권장합니다. 더 오래된 KONEPS 제품의 추천·첨부 분석·설정은 별도 계약입니다. [전환 안내](docs/migration.md)와 보존된 [v0.3.1](https://github.com/solid-hwan/nara-data-collector/tree/v0.3.1)을 확인하세요.
 
 ## 개발·문제 해결
 
@@ -153,6 +153,6 @@ coverage = service.coverage()  # 인증·외부 호출 없음
 | job_busy | 같은 작업 실행이 끝날 때까지 대기, 실행 중 DB·잠금 삭제 금지 |
 | 차단·API 오류 | 권한·할당량·공식 입력 조건 확인, 오류를 정상0건으로 처리하지 않음 |
 
-기여자는 [CONTRIBUTING.md](CONTRIBUTING.md), AI 코딩 도구는 [AGENTS.md](AGENTS.md)와 [CLAUDE.md](CLAUDE.md)를 먼저 읽습니다. 버그 제보는 OS·Python·제품 버전·키를 제거한 입력·reason·기대 결과를 포함해 [Issues](https://github.com/solid-hwan/nara-data-mcp/issues)에 남겨 주세요.
+기여자는 [CONTRIBUTING.md](CONTRIBUTING.md), AI 코딩 도구는 [AGENTS.md](AGENTS.md)와 [CLAUDE.md](CLAUDE.md)를 먼저 읽습니다. 버그 제보는 OS·Python·제품 버전·키를 제거한 입력·reason·기대 결과를 포함해 [Issues](https://github.com/solid-hwan/nara-data-collector/issues)에 남겨 주세요.
 
 [MIT LICENSE](LICENSE) · [외부 의존성 고지](NOTICE.md) · [변경 이력](CHANGELOG.md). 코드 수정·재배포·상업적 활용 시 저작권·허락 고지를 유지하세요.

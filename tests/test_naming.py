@@ -28,7 +28,7 @@ class NamingTests(unittest.TestCase):
             outputs = []
             for command in commands:
                 help_result = subprocess.run(command + ['--help'], capture_output=True, text=True, check=True, timeout=10)
-                self.assertIn('나라장터 데이터 MCP', help_result.stdout)
+                self.assertIn('나라장터 데이터 수집기', help_result.stdout)
                 self.assertIn('nara-data-mcp', help_result.stdout)
                 result = subprocess.run(command + ['--job-dir', tmp, 'coverage'], capture_output=True, text=True, check=True, timeout=10, env=clean_env())
                 outputs.append(json.loads(result.stdout))

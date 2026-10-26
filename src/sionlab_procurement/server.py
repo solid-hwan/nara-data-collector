@@ -63,7 +63,7 @@ def serve(service):
                 requested=params.get('protocolVersion')
                 version=requested if requested in ('2024-11-05','2025-03-26','2025-06-18','2025-11-25') else '2025-11-25'
                 result={'protocolVersion':version,'capabilities':{'tools':{'listChanged':False}},
-                        'serverInfo':{'name':'nara-data-mcp','version':'0.5.0'},
+                        'serverInfo':{'name':'nara-data-mcp','version':'0.5.1'},
                         'instructions':'Search/detail are one-page snapshots. Opening rank is not a final award. Check partial and reason.'}
                 initialized=True
             elif method=='ping':result={}

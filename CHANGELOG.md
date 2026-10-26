@@ -1,5 +1,10 @@
 # 변경 이력
 
+## 0.5.1 — 2026-10-26
+
+- 제품 이름을 나라장터 데이터 수집기로, GitHub 저장소를 nara-data-collector로 변경.
+- 기존 패키지·CLI·Python·MCP 식별자와 기능은 유지.
+
 ## 0.5.0 — 2026-10-26
 
 - 공개명을 나라장터 데이터 MCP로 통일하고 nara-data-mcp / python -m nara_data_mcp 및 nara_* MCP 도구명을 제공합니다.

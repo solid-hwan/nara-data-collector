@@ -7,7 +7,7 @@ from .service import Procurement
 
 
 def main(argv=None):
-    parser=argparse.ArgumentParser(prog='nara-data-mcp', description='나라장터 데이터 MCP 0.5.0 — 공고·발주계획 검색과 수집')
+    parser=argparse.ArgumentParser(prog='nara-data-mcp', description='나라장터 데이터 수집기 0.5.1 — 공고·발주계획 검색과 수집')
     parser.add_argument('--job-dir',default=os.environ.get('SIONLAB_JOB_DIR','jobs'))
     commands=parser.add_subparsers(dest='command',required=True)
     commands.add_parser('serve',help='MCP stdio server')

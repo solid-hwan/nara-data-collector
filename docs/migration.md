@@ -1,5 +1,9 @@
 # 기존 도구와 새 인터페이스 대응
 
+## 0.5.1 제품명과 저장소 이름
+
+제품명은 **나라장터 데이터 수집기**, GitHub 저장소는 `nara-data-collector`입니다. 기존 패키지·CLI·Python·MCP 도구 식별자와 작업 형식은 유지합니다. 아래는 이전 버전의 전환 이력입니다.
+
 ## 0.5.0 명칭 변경과 호환
 
 공개 제품명은 **나라장터 데이터 MCP — 공고·발주계획 검색과 수집**, 저장소·패키지·명령은 `nara-data-mcp`, 모듈 실행은 `python -m nara_data_mcp`입니다. 기존 `sionlab-procurement` 명령과 `python -m sionlab_procurement`는 같은 처리를 사용합니다.

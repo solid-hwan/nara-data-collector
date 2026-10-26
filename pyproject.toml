@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nara-data-mcp"
-version = "0.5.0"
-description = "나라장터 데이터 MCP — 공고·발주계획 검색과 수집"
+version = "0.5.1"
+description = "나라장터 데이터 수집기 — 공고·발주계획 검색과 수집"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "SIONLAB"}]

@@ -1,4 +1,4 @@
-# 나라장터 데이터 MCP — Claude Code 작업 진입점
+# 나라장터 데이터 수집기 — Claude Code 작업 진입점
 
 이 저장소는 독립 실행 가능한 오픈소스 Python 도구다. Claude Code 없이도 설치·CLI·시험·기여가 가능하다. 이 파일은 Claude의 탐색 순서와 작업 흐름을 안내하며, 공통 변경 규칙과 호환 계약의 정본은 [AGENTS.md](AGENTS.md)다. 시작 시 두 파일을 실제로 읽는다.
 

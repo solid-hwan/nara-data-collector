@@ -1,4 +1,4 @@
-# 나라장터 데이터 MCP — 에이전트 작업 안내
+# 나라장터 데이터 수집기 — 에이전트 작업 안내
 
 Codex·Claude Code 등 AI 코딩 도구와 사람이 같은 계약을 따르기 위한 지침이다. 상세 개발 절차는 [CONTRIBUTING.md](CONTRIBUTING.md), 데이터 계약은 [docs/contract.md](docs/contract.md), 전환은 [docs/migration.md](docs/migration.md)를 따른다.
 
@@ -58,7 +58,7 @@ pip가 없는 uv 환경은 `uv pip install --python .venv/bin/python --no-build-
 
 ## 반드시 유지할 계약
 
-- 공개명·명령 `nara-data-mcp`, 모듈 `nara_data_mcp`, 제작자·저작권 SIONLAB을 사용한다. 내부 `sionlab_procurement` 경로는 호환 인터페이스다.
+- 제품명은 나라장터 데이터 수집기이며 호환 명령 `nara-data-mcp`, 모듈 `nara_data_mcp`, 제작자·저작권 SIONLAB을 사용한다. 내부 `sionlab_procurement` 경로는 호환 인터페이스다.
 - 기존 `sionlab-procurement` 명령·Python 모듈과 다섯 `sionlab_*` MCP 호출을 유지한다. 도구 목록에는 `nara_search/detail/collect/coverage/job_status`만 표시한다.
 - `search/detail`은 한 페이지다. `collect`의 전체 최대20회 예산은 요청 직전 예약하고 같은 작업 재개로 초기화하지 않는다. 조건·예산 변경을 같은 작업에 적용하지 않는다.
 - 페이지의 원문 저장과 다음 위치 갱신은 원자적이어야 한다. 저장 전후 중단 시험·동시 실행 잠금·중복 제거 기준을 함께 점검한다.

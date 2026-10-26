@@ -1,4 +1,4 @@
-# 나라장터 데이터 MCP — 개발자용 상세 흐름
+# 나라장터 데이터 수집기 — 개발자용 상세 흐름
 
 [처음 사용하는 분을 위한 안내](../README.md#한눈에-보는-사용-흐름)에서는 네 단계로 사용 방법을 설명합니다. 아래 도표는 코드를 연결하거나 수정할 때 참고하는 처리 순서입니다.
 
@@ -11,7 +11,7 @@ flowchart TD
     A["공고 조사 · 발주계획 정리 · 조달자료 보관"] --> B["조회 조건 작성: 서비스 · 기간 · 기관"]
     B --> C["CLI 또는 Python으로 실행"]
     B --> D["선택: MCP 클라이언트에서 요청"]
-    C --> E["나라장터 데이터 MCP"]
+    C --> E["나라장터 데이터 수집기"]
     D --> E
     E --> F["search / detail: 한 페이지 JSON"]
     E --> G["collect: 기간별 수집 · SQLite 저장"]
@@ -27,7 +27,7 @@ flowchart TD
 sequenceDiagram
     autonumber
     actor U as 사용자 / MCP 클라이언트
-    participant T as 나라장터 데이터 MCP
+    participant T as 나라장터 데이터 수집기
     participant A as 공식 조달 API
     participant D as SQLite 작업 DB
     participant F as Excel / JSONL / CSV
