@@ -1,5 +1,5 @@
 """Independent SIONLAB procurement package."""
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 from .client import Client
 from .service import Procurement
 

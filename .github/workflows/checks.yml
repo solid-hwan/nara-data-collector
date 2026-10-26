@@ -15,5 +15,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python setup-lab.py
       - run: .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
-      - run: .venv/bin/python -m sionlab_procurement --help
+      - run: .venv/bin/python -m nara_data_mcp --help
+      - run: .venv/bin/nara-data-mcp --help
+      - run: .venv/bin/sionlab-procurement --help
       - run: .venv/bin/python examples/run_examples.py --output "${{ runner.temp }}/examples"

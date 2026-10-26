@@ -1,18 +1,18 @@
 # 입출력·저장 계약
 
-검색은 단일 페이지의 관찰 결과입니다. 전체 수집은 `sionlab_collect`로 별도 요청하며 작업 전체 호출 예산을 적용합니다.
+검색은 단일 페이지의 관찰 결과입니다. 전체 수집은 `nara_collect`로 별도 요청하며 작업 전체 호출 예산을 적용합니다.
 
 ## MCP와 Python
 
 | MCP 도구 | Python 메서드 | 핵심 입력 |
 |---|---|---|
-| sionlab_search | Procurement.search | service, business, operation, start/end, params, page, page_size, filters |
-| sionlab_detail | Procurement.detail | service, identifiers + search 입력 |
-| sionlab_collect | Procurement.collect | job_id, query, max_calls=20, retry_failed=false |
-| sionlab_coverage | Procurement.coverage | 없음 |
-| sionlab_job_status | Procurement.job_status | job_id, include_data=false |
+| nara_search | Procurement.search | service, business, operation, start/end, params, page, page_size, filters |
+| nara_detail | Procurement.detail | service, identifiers + search 입력 |
+| nara_collect | Procurement.collect | job_id, query, max_calls=20, retry_failed=false |
+| nara_coverage | Procurement.coverage | 없음 |
+| nara_job_status | Procurement.job_status | job_id, include_data=false |
 
-`service`는 bids/openings/awards/contracts/specs/plans/requests/prices/process/standard/private/private_awards입니다. `business`는 construction/goods/services/foreign이며 해당 공식 오퍼레이션이 없으면 호출하지 않습니다. 기본 업무는 construction입니다. `operation`에 공식 식별자를 지정하면 기본 선택을 대체합니다. `sionlab_coverage`는 사용할 수 있는 이름과 파라미터 목록을 반환합니다.
+`service`는 bids/openings/awards/contracts/specs/plans/requests/prices/process/standard/private/private_awards입니다. `business`는 construction/goods/services/foreign이며 해당 공식 오퍼레이션이 없으면 호출하지 않습니다. 기본 업무는 construction입니다. `operation`에 공식 식별자를 지정하면 기본 선택을 대체합니다. `nara_coverage`는 사용할 수 있는 이름과 파라미터 목록을 반환합니다.
 
 `start/end`는 포함 범위인 YYYY-MM-DD입니다. 검색은 일반 7일, 표준 입찰·계약 28일, 표준 개찰 7일을 넘으면 거부합니다. 수집은 같은 정책으로 날짜 구간을 나누고 각 구간에서 페이지 1부터 순회합니다. 날짜 없는 가격·계약과정 조회는 하나의 페이지 구간으로 취급합니다. 원시 날짜 파라미터를 사용하는 검색도 범위를 검사하며, 수집의 자동 기간 분할에는 start/end를 사용합니다.
 

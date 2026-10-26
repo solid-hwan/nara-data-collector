@@ -3,7 +3,7 @@
 두 예제는 실제 기관·고객·공고·입찰금액과 관계없는 자료입니다. 인증 없이 메모리의 가상 API 응답을 사용합니다.
 
 ```bash
-.venv/bin/python examples/run_examples.py --output /tmp/sionlab-procurement-demo
+.venv/bin/python examples/run_examples.py --output /tmp/nara-data-mcp-demo
 ```
 
 | 예제 | 입력 | 예상 결과 | Excel |

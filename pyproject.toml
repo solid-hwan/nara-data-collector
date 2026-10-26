@@ -3,9 +3,9 @@ requires = ["setuptools==80.9.0", "wheel==0.45.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sionlab-procurement-mcp"
-version = "0.4.0"
-description = "SIONLAB procurement search and resumable collection over official Korean public APIs"
+name = "nara-data-mcp"
+version = "0.5.0"
+description = "나라장터 데이터 MCP — 공고·발주계획 검색과 수집"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{name = "SIONLAB"}]
@@ -13,6 +13,7 @@ readme = "README.md"
 dependencies = ["openpyxl==3.1.5", "et-xmlfile==2.0.0"]
 
 [project.scripts]
+nara-data-mcp = "sionlab_procurement.cli:main"
 sionlab-procurement = "sionlab_procurement.cli:main"
 
 [tool.setuptools.packages.find]

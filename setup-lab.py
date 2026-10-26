@@ -18,4 +18,4 @@ python = venv_dir / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
 installer = ['uv', 'pip', 'install', '--python', str(python)] if use_uv else [str(python), '-m', 'pip', 'install']
 subprocess.run(installer + ['-r', str(root / 'requirements.lock')], check=True)
 subprocess.run(installer + ['--no-build-isolation', '--no-deps', str(root)], check=True)
-print(f'Ready: {python} -m sionlab_procurement --help')
+print(f'Ready: {python} -m nara_data_mcp --help')

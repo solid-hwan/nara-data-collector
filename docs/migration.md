@@ -1,21 +1,29 @@
 # 기존 도구와 새 인터페이스 대응
 
+## 0.5.0 명칭 변경과 호환
+
+공개 제품명은 **나라장터 데이터 MCP — 공고·발주계획 검색과 수집**, 저장소·패키지·명령은 `nara-data-mcp`, 모듈 실행은 `python -m nara_data_mcp`입니다. 기존 `sionlab-procurement` 명령과 `python -m sionlab_procurement`는 같은 처리를 사용합니다.
+
+MCP 도구 목록에는 `nara_search`, `nara_detail`, `nara_collect`, `nara_coverage`, `nara_job_status`만 표시합니다. 이전 `sionlab_*` 다섯 이름으로 호출해도 같은 메서드로 연결됩니다. 기존 클라이언트는 도구 목록을 새로 읽어 새 이름을 사용할 수 있습니다. 운영 MCP 설정은 자동 변경하지 않습니다.
+
+0.4.0의 SQLite 작업·호출 예산·Excel records/long_values 형식과 SIONLAB_JOB_DIR 환경변수를 유지합니다. 아래 v0.3.1→v0.4.0 전환의 비호환 안내는 그 이전 제품에만 적용되며, 0.4.0→0.5.0 작업 DB는 그대로 이어 씁니다. 패키지 배포명 변경으로 기존 패키지와 파일이 겹칠 수 있으므로 새 가상환경에 설치하고 기존 작업 폴더를 지정하세요.
+
 기존 도구 이름은 사용자가 기능 위치를 찾기 위한 식별자 참조입니다. 기존 구현을 호출하거나 외부 코드·문서를 복제한 것이 아닙니다. 연결 설정은 자동으로 바꾸지 않습니다.
 
 | 기존 도구명 | 새 호출 방향 | 차이·제약 |
 |---|---|---|
-| g2b_search_bids / search_bid_announcements / get_bids_by_keyword | sionlab_search(service=bids) 또는 sionlab_collect | 검색 1페이지; specs를 함께 원하면 별도로 조회 |
-| g2b_get_bid_detail / get_bid_detail | sionlab_detail(service=bids, identifiers) | 번호·차수 일치행; 상세 하위항목은 operation별 별도 요청 |
-| g2b_search_awards | sionlab_search(service=openings) | 개찰 의미를 명시; 최종낙찰 추정 없음 |
-| g2b_get_award_status / search_successful_bids | sionlab_search(service=awards) | 최종낙찰 소스 조회; 예비가격은 해당 operation 직접 선택 |
-| g2b_search_contracts / search_contracts | sionlab_search(service=contracts) | 계약 식별자·원문 금액 문자열 보존 |
-| g2b_search_pre_specs | sionlab_search(service=specs) | 별도 서비스 호출 |
-| g2b_search_plans | sionlab_search(service=plans) | 발주년월·게시기간·기관조건 명시 |
-| g2b_search_procurement_requests | sionlab_search(service=requests) | 요청번호를 그대로 보존 |
-| g2b_search_prices | sionlab_search(service=prices, operation) | 11개 공식 가격 오퍼레이션 명시 선택; 참고가격 |
-| g2b_standard_search | sionlab_search(service=standard, operation) | 표준 전용 날짜명·필수조건 적용 |
-| g2b_track_process | sionlab_search(service=process, params) | 시작 번호 필수; 없는 단계를 생성하지 않음 |
-| g2b_debug | sionlab_coverage / 키 없는 search 오류 | 키값·키 일부를 반환하지 않음 |
+| g2b_search_bids / search_bid_announcements / get_bids_by_keyword | nara_search(service=bids) 또는 nara_collect | 검색 1페이지; specs를 함께 원하면 별도로 조회 |
+| g2b_get_bid_detail / get_bid_detail | nara_detail(service=bids, identifiers) | 번호·차수 일치행; 상세 하위항목은 operation별 별도 요청 |
+| g2b_search_awards | nara_search(service=openings) | 개찰 의미를 명시; 최종낙찰 추정 없음 |
+| g2b_get_award_status / search_successful_bids | nara_search(service=awards) | 최종낙찰 소스 조회; 예비가격은 해당 operation 직접 선택 |
+| g2b_search_contracts / search_contracts | nara_search(service=contracts) | 계약 식별자·원문 금액 문자열 보존 |
+| g2b_search_pre_specs | nara_search(service=specs) | 별도 서비스 호출 |
+| g2b_search_plans | nara_search(service=plans) | 발주년월·게시기간·기관조건 명시 |
+| g2b_search_procurement_requests | nara_search(service=requests) | 요청번호를 그대로 보존 |
+| g2b_search_prices | nara_search(service=prices, operation) | 11개 공식 가격 오퍼레이션 명시 선택; 참고가격 |
+| g2b_standard_search | nara_search(service=standard, operation) | 표준 전용 날짜명·필수조건 적용 |
+| g2b_track_process | nara_search(service=process, params) | 시작 번호 필수; 없는 단계를 생성하지 않음 |
+| g2b_debug | nara_coverage / 키 없는 search 오류 | 키값·키 일부를 반환하지 않음 |
 | recommend_bids_for_dept | filters와 서버 params를 사용한 search/collect | 기존 부서 프로필·추천 모델 재사용 없음 |
 | analyze_bid_detail | 직접 대응 기능 없음 | 첨부 HWP/PDF/DOCX 본문 분석은 이 제품 범위 밖 |
 

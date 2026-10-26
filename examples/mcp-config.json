@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "sionlab-procurement": {
+    "nara-data-mcp": {
       "command": "/ABSOLUTE/PATH/TO/.venv/bin/python",
-      "args": ["-m", "sionlab_procurement", "--job-dir", "/ABSOLUTE/PATH/TO/LOCAL/jobs", "serve"],
+      "args": ["-m", "nara_data_mcp", "--job-dir", "/ABSOLUTE/PATH/TO/LOCAL/jobs", "serve"],
       "env": {"DATA_GO_KR_API_KEY": "REPLACE_LOCALLY_WITH_DECODED_KEY"}
     }
   }

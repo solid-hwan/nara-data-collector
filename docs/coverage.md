@@ -33,7 +33,7 @@
 
 ## 등록 오퍼레이션
 
-아래는 공식 기술 식별자 목록입니다. 기능에 맞는 파라미터 이름은 `sionlab-procurement coverage`의 parameters 또는 패키지 official_operations.json으로 확인합니다. 기본 목록 이외 상세·변경·의견·예비가격 등 하위 오퍼레이션은 명시 선택해야 합니다. 등록 사실만으로 성공·완전성을 보증하지 않습니다.
+아래는 공식 기술 식별자 목록입니다. 기능에 맞는 파라미터 이름은 `nara-data-mcp coverage`의 parameters 또는 패키지 official_operations.json으로 확인합니다. 기본 목록 이외 상세·변경·의견·예비가격 등 하위 오퍼레이션은 명시 선택해야 합니다. 등록 사실만으로 성공·완전성을 보증하지 않습니다.
 
 ### 입찰공고
 
