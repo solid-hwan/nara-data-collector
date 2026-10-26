@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-10-24T08:18:08.446844+00:00",
+  "version": "0.1.0",
+  "python": "3.11.13",
+  "runtime_import": "installed site-packages, not PYTHONPATH/src",
+  "command": "python -m unittest discover -s tests -p test_*.py",
+  "test_count": 38,
+  "returncode": 0,
+  "status": "pass",
+  "examples": [
+    {
+      "example": "construction",
+      "fixture_only": true,
+      "source_rows": 3,
+      "read_rows": 3,
+      "filtered_rows": 2,
+      "saved_rows": 2,
+      "excel_reopened": true
+    },
+    {
+      "example": "institution",
+      "fixture_only": true,
+      "source_rows": 2,
+      "read_rows": 2,
+      "filtered_rows": 2,
+      "saved_rows": 2,
+      "excel_reopened": true
+    }
+  ],
+  "external_api_calls": 0,
+  "scope": "New implementation tests only; no old repository test results reused",
+  "live_evidence": "live-verification.json",
+  "limits": [
+    "Linux tested; Windows/macOS unverified",
+    "144 registered operations are not 144 live verified operations",
+    "Fresh ZIP installation is separately recorded by the shared tooling"
+  ]
+}

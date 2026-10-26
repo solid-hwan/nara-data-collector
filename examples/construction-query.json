@@ -1,0 +1,8 @@
+{
+  "service": "bids",
+  "business": "construction",
+  "start": "2026-10-01",
+  "end": "2026-10-01",
+  "page_size": 2,
+  "filters": {"bidNtceNm": "보수"}
+}

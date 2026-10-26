@@ -1,33 +1,22 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel==0.45.1"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "koneps-sionlab-mcp"
-version = "0.3.1"
-description = "나라장터(KONEPS/G2B) 공공조달 MCP 서버 — 물품·용역 외 전 업무구분 조회"
+name = "sionlab-procurement-mcp"
+version = "0.4.0"
+description = "SIONLAB procurement search and resumable collection over official Korean public APIs"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "SIONLAB"}]
 readme = "README.md"
-license = { text = "MIT" }
-authors = [{ name = "KKHWAN", email = "lee.kkhwan@gmail.com" }]
-keywords = ["korea", "procurement", "koneps", "narajangteo", "g2b", "mcp", "claude"]
-
-# `X | None` (PEP 604) 문법을 쓰므로 3.10 이 최소다.
-requires-python = ">=3.10"
-
-# g2b.py 는 표준 라이브러리만 쓴다. 아래는 MCP 서버 계층에만 필요하다.
-dependencies = [
-    # mcp 2.0 이 mcp.server.fastmcp 경로를 제거했다. 상한을 고정한다.
-    "mcp<2",
-    "pydantic>=2",
-]
-
-[project.urls]
-Homepage = "https://github.com/kkhwan1/KONEPS_sionlab"
-Repository = "https://github.com/kkhwan1/KONEPS_sionlab.git"
-Issues = "https://github.com/kkhwan1/KONEPS_sionlab/issues"
+dependencies = ["openpyxl==3.1.5", "et-xmlfile==2.0.0"]
 
 [project.scripts]
-koneps-mcp = "koneps_mcp.server:main"
+sionlab-procurement = "sionlab_procurement.cli:main"
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[tool.setuptools.packages.find]
+where = ["src"]
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/koneps_mcp"]
+[tool.setuptools.package-data]
+sionlab_procurement = ["*.json"]

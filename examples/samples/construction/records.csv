@@ -1,0 +1,3 @@
+﻿record_index,raw,normalized,missing_reasons
+1,"{""bidClseDt"":""2026-10-20 10:00:00"",""bidNtceNm"":""가상시 도서관 지붕 보수"",""bidNtceNo"":""SYNTH-BID-001"",""bidNtceOrd"":""000"",""ntceInsttNm"":""가상시"",""presmptPrce"":""180000000""}","{""identifiers"":{""bidNtceNo"":""SYNTH-BID-001"",""bidNtceOrd"":""000""},""record_semantics"":""source_record"",""title"":""가상시 도서관 지붕 보수""}",{}
+2,"{""bidNtceNm"":""가상군 학교 창호 보수"",""bidNtceNo"":""SYNTH-BID-003"",""bidNtceOrd"":""000"",""ntceInsttNm"":""가상교육청"",""presmptPrce"":""98000000""}","{""identifiers"":{""bidNtceNo"":""SYNTH-BID-003"",""bidNtceOrd"":""000""},""record_semantics"":""source_record"",""title"":""가상군 학교 창호 보수""}",{}

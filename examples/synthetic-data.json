@@ -1,0 +1,11 @@
+{
+  "construction": [
+    {"bidNtceNo": "SYNTH-BID-001", "bidNtceOrd": "000", "bidNtceNm": "가상시 도서관 지붕 보수", "ntceInsttNm": "가상시", "presmptPrce": "180000000", "bidClseDt": "2026-10-20 10:00:00"},
+    {"bidNtceNo": "SYNTH-BID-002", "bidNtceOrd": "001", "bidNtceNm": "가상시 공원 관리동 신축", "ntceInsttNm": "가상시", "presmptPrce": "270000000"},
+    {"bidNtceNo": "SYNTH-BID-003", "bidNtceOrd": "000", "bidNtceNm": "가상군 학교 창호 보수", "ntceInsttNm": "가상교육청", "presmptPrce": "98000000"}
+  ],
+  "institution": [
+    {"orderPlanUntyNo": "SYNTH-PLAN-001", "orderOrd": "01", "orderInsttCd": "SYNTHETIC-ORG", "orderInsttNm": "가상도시연구원", "bizNm": "가상 실험실 확장 공사", "orderYear": "2026", "orderMnth": "11", "sumOrderAmt": "12345678901234567890"},
+    {"orderPlanUntyNo": "SYNTH-PLAN-002", "orderOrd": "02", "orderInsttCd": "SYNTHETIC-ORG", "orderInsttNm": "가상도시연구원", "bizNm": "가상 교육동 외벽 보수", "orderYear": "2026", "orderMnth": "12", "sumOrderAmt": "86000000"}
+  ]
+}

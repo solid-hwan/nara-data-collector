@@ -1,0 +1,55 @@
+{
+  "rows": 2,
+  "columns": [
+    "record_index",
+    "raw",
+    "normalized",
+    "missing_reasons"
+  ],
+  "canonical": "records.jsonl",
+  "excel_long_values": "long_values: join text by record_index/column/chunk_index",
+  "partial": false,
+  "status": "complete",
+  "scope_reason": null,
+  "collection": {
+    "job_id": "institution",
+    "status": "complete",
+    "partial": false,
+    "reason": null,
+    "query": {
+      "service": "plans",
+      "business": "construction",
+      "start": "2026-10-01",
+      "end": "2026-10-01",
+      "params": {
+        "orderBgnYm": "202610",
+        "orderEndYm": "202612",
+        "orderInsttCd": "SYNTHETIC-ORG"
+      },
+      "page_size": 2
+    },
+    "source_total_count": 2,
+    "source_total_reason": null,
+    "read_count": 2,
+    "filtered_count": 2,
+    "unique_count": 2,
+    "calls_reserved": 1,
+    "max_calls": 20,
+    "checkpoint": {
+      "segment": 1,
+      "page": 1
+    },
+    "failed_segments": [],
+    "created_at": "2026-10-26T02:04:43.811980+00:00",
+    "updated_at": "2026-10-26T02:04:43.815577+00:00",
+    "snapshot_guarantee": false,
+    "exported_at": "2026-10-26T02:04:43.824269+00:00",
+    "exported_rows": 2,
+    "scope_reason": null,
+    "overview_note": "보기용 시트. 빈칸은 원문값 없음. 긴 값은 표시만 축약하며 전체는 records/long_values에 보존."
+  },
+  "overview_sheet": "Overview",
+  "collection_sheet": "Collection",
+  "amounts_and_identifiers": "preserved as source JSON strings",
+  "formula_policy": "all XLSX cells explicit text; CSV contains canonical JSON objects"
+}

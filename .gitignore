@@ -1,90 +1,16 @@
-# 환경변수 / 비밀
-.env
-.env.local
-.env.*.local
-
-# MCP 설정은 키 0개 (.env 에서 로드하는 래퍼 스크립트 경유). 커밋 대상.
-
-# Python
+.venv/
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-.venv/
-venv/
-env/
-.mypy_cache/
-.pytest_cache/
-.ruff_cache/
-
-# uv / uvx
-.uv-cache/
-.venv*/
-
-# Node
-node_modules/
-npm-debug.log*
-
-# OS / IDE
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-
-# 로그 / 임시 / DB
-*.log
-tmp/
-temp/
-.cache/
-*.db
-*.sqlite
-*.sqlite3
-
-# MCP 원시 응답 캐시 (대용량, 변동성). 규칙 파일만 유지.
-# 2단계 구조: data/raw/{source}/{tool}/*.json
-data/raw/**/*.json
-
-# 영업 산출물 — 공개 저장소에 올리지 않는다 (2026-09-17).
-# 이유: 이 세 디렉터리에는 수요기관 담당자 실명·전화번호·이메일이 들어 있다.
-#   - data/processed/contacts.csv        담당자 68행 (전화 35건)
-#   - data/reports/call/**              통화 대본 (전화 62건)
-# API 응답 자체가 담당자 연락처를 포함하므로(ntceInsttOfclTel,
-# fnlSucsfCorpContactTel 등) 가공 산출물도 같은 취급을 한다.
-# 실데이터 정본은 비공개 저장소에 두고, 여기에는 구조 설명 README만 남긴다.
-#
-# 디렉터리 자체를 제외하면 그 안의 파일은 !패턴으로 되살릴 수 없으므로
-# (git은 제외된 디렉터리를 아예 탐색하지 않는다), 와일드카드로 내용만 제외하고
-# README.md 는 명시적으로 되살린다.
-# README 까지 전부 제외한다. data/reports/README.md 에는 담당자 전화 12건과
-# 회사명이 있고, data/processed/README.md 는 로컬 CSV 를 링크해 공개 시
-# 깨진다. data/analysis/README.md 는 아예 존재하지 않는다.
-# data/raw/ 하위 문서는 개인정보가 없어 추적한다 (*.json 만 제외).
-data/processed/
-data/reports/
-data/analysis/
-
-# 회사 메타데이터를 인라인 하드코딩한 일회성 스크립트 (2026-09-17).
-# 실제 회사명·대표자명·전화번호·사업자등록번호가 소스에 박혀 있어 공개 대상이 아니다.
-# 파이프라인 정본은 call_calendar_auto.py (CSV 입력, 개인정보 0건)다.
-scripts/call_calendar.py
-scripts/call_calendar_0618.py
-scripts/append_contacts_0617.py
-
-# 회사 내부 전략 문서 (2026-09-17). 이 저장소는 '나라장터 MCP 도구'이고
-# 정부지원사업 진입 전략·사업자등록은 도구 사용과 무관한 내부 자료다.
-# docs/sionlab-profile.md 는 recommend_bids_for_dept 툴이 상정하는
-# 프로필이므로 공개 대상에서 제외하지 않는다.
-docs/rnd-programs/
-docs/business-registration/
-docs/_html/
-
-# 빌드 결과
-dist/
 build/
+dist/
 *.egg-info/
-
-# Claude 로컬 (팀 구조는 커밋, 세션/로컬 상태는 제외)
-.claude/settings.local.json
-.claude/.session/
+.env
+.env.*
+!.env.example
+jobs/
+*.sqlite*
+*.lock
+!requirements.lock
+!requirements-browser.lock
+Report/
+.work-records/

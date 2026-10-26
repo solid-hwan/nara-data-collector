@@ -1,0 +1,147 @@
+[
+  {
+    "source_distribution_path": "openpyxl-3.1.5.dist-info/LICENCE.rst",
+    "notice": "docs/licenses/openpyxl-3.1.5.dist-info/LICENCE.rst",
+    "sha256": "0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e"
+  },
+  {
+    "source_distribution_path": "et_xmlfile-2.0.0.dist-info/LICENCE.python",
+    "notice": "docs/licenses/et_xmlfile-2.0.0.dist-info/LICENCE.python",
+    "sha256": "4ccdaaebc0f44b83720ec0399bb7ab329adce067dd62f73c5535a2dc05628ab2"
+  },
+  {
+    "source_distribution_path": "et_xmlfile-2.0.0.dist-info/LICENCE.rst",
+    "notice": "docs/licenses/et_xmlfile-2.0.0.dist-info/LICENCE.rst",
+    "sha256": "0c84bb42f5d367e5ebf9fc2dde35b16141df5ee0fdc189250858bc6c5560f69e"
+  },
+  {
+    "source_distribution_path": "setuptools-80.9.0.dist-info/licenses/LICENSE",
+    "notice": "docs/licenses/setuptools-80.9.0.dist-info/licenses/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "wheel-0.45.1.dist-info/LICENSE.txt",
+    "notice": "docs/licenses/wheel-0.45.1.dist-info/LICENSE.txt",
+    "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/jaraco.collections-5.1.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/jaraco.collections-5.1.0.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/jaraco.context-5.3.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/jaraco.context-5.3.0.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/packaging-24.2.dist-info/LICENSE.APACHE",
+    "notice": "docs/licenses/setuptools/_vendor/packaging-24.2.dist-info/LICENSE.APACHE",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/packaging-24.2.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/packaging-24.2.dist-info/LICENSE",
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/packaging-24.2.dist-info/LICENSE.BSD",
+    "notice": "docs/licenses/setuptools/_vendor/packaging-24.2.dist-info/LICENSE.BSD",
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/more_itertools-10.3.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/more_itertools-10.3.0.dist-info/LICENSE",
+    "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/wheel-0.45.1.dist-info/LICENSE.txt",
+    "notice": "docs/licenses/setuptools/_vendor/wheel-0.45.1.dist-info/LICENSE.txt",
+    "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/zipp-3.19.2.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/zipp-3.19.2.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/autocommand-2.2.2.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/autocommand-2.2.2.dist-info/LICENSE",
+    "sha256": "ade78d04982d69972d444a8e14a94f87a2334dd3855cc80348ea8e240aa0df2d"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/jaraco.functools-4.0.1.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/jaraco.functools-4.0.1.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/typing_extensions-4.12.2.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/typing_extensions-4.12.2.dist-info/LICENSE",
+    "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/typeguard-4.3.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/typeguard-4.3.0.dist-info/LICENSE",
+    "sha256": "6163f7987dfb38d6bc320ce2b70b2f02b862bc41126516d552ef1cd43247e758"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/backports.tarfile-1.2.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/backports.tarfile-1.2.0.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/tomli-2.0.1.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/tomli-2.0.1.dist-info/LICENSE",
+    "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/jaraco.text-3.12.1.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/jaraco.text-3.12.1.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/inflect-7.3.1.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/inflect-7.3.1.dist-info/LICENSE",
+    "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/importlib_metadata-8.0.0.dist-info/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/importlib_metadata-8.0.0.dist-info/LICENSE",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/wheel/vendored/packaging/LICENSE.APACHE",
+    "notice": "docs/licenses/setuptools/_vendor/wheel/vendored/packaging/LICENSE.APACHE",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/wheel/vendored/packaging/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/wheel/vendored/packaging/LICENSE",
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/wheel/vendored/packaging/LICENSE.BSD",
+    "notice": "docs/licenses/setuptools/_vendor/wheel/vendored/packaging/LICENSE.BSD",
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  {
+    "source_distribution_path": "setuptools/_vendor/platformdirs-4.2.2.dist-info/licenses/LICENSE",
+    "notice": "docs/licenses/setuptools/_vendor/platformdirs-4.2.2.dist-info/licenses/LICENSE",
+    "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
+  },
+  {
+    "source_distribution_path": "wheel/vendored/packaging/LICENSE.APACHE",
+    "notice": "docs/licenses/wheel/vendored/packaging/LICENSE.APACHE",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "source_distribution_path": "wheel/vendored/packaging/LICENSE",
+    "notice": "docs/licenses/wheel/vendored/packaging/LICENSE",
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "source_distribution_path": "wheel/vendored/packaging/LICENSE.BSD",
+    "notice": "docs/licenses/wheel/vendored/packaging/LICENSE.BSD",
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  }
+]

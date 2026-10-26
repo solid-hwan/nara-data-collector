@@ -1,0 +1,8 @@
+{
+  "service": "plans",
+  "business": "construction",
+  "start": "2026-10-01",
+  "end": "2026-10-01",
+  "params": {"orderBgnYm": "202610", "orderEndYm": "202612", "orderInsttCd": "SYNTHETIC-ORG"},
+  "page_size": 2
+}

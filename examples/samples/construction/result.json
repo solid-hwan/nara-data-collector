@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "job_id": "construction",
+  "status": "complete",
+  "reason": null,
+  "partial": false,
+  "data": [
+    {
+      "missing_reasons": {},
+      "normalized": {
+        "identifiers": {
+          "bidNtceNo": "SYNTH-BID-001",
+          "bidNtceOrd": "000"
+        },
+        "record_semantics": "source_record",
+        "title": "가상시 도서관 지붕 보수"
+      },
+      "raw": {
+        "bidClseDt": "2026-10-20 10:00:00",
+        "bidNtceNm": "가상시 도서관 지붕 보수",
+        "bidNtceNo": "SYNTH-BID-001",
+        "bidNtceOrd": "000",
+        "ntceInsttNm": "가상시",
+        "presmptPrce": "180000000"
+      }
+    },
+    {
+      "missing_reasons": {},
+      "normalized": {
+        "identifiers": {
+          "bidNtceNo": "SYNTH-BID-003",
+          "bidNtceOrd": "000"
+        },
+        "record_semantics": "source_record",
+        "title": "가상군 학교 창호 보수"
+      },
+      "raw": {
+        "bidNtceNm": "가상군 학교 창호 보수",
+        "bidNtceNo": "SYNTH-BID-003",
+        "bidNtceOrd": "000",
+        "ntceInsttNm": "가상교육청",
+        "presmptPrce": "98000000"
+      }
+    }
+  ],
+  "source_total_count": 3,
+  "source_total_reason": null,
+  "source_totals_by_segment": [
+    3
+  ],
+  "read_count": 3,
+  "filtered_count": 2,
+  "unique_count": 2,
+  "calls_reserved": 2,
+  "max_calls": 20,
+  "checkpoint": {
+    "segment": 1,
+    "page": 1
+  },
+  "failed_segments": [],
+  "query": {
+    "service": "bids",
+    "business": "construction",
+    "start": "2026-10-01",
+    "end": "2026-10-01",
+    "page_size": 2,
+    "filters": {
+      "bidNtceNm": "보수"
+    }
+  },
+  "counts_note": "read/filtered include duplicates; unique_count is persisted deduplication; totals are per-window source reports",
+  "snapshot_guarantee": false,
+  "created_at": "2026-10-26T02:04:43.765363+00:00",
+  "updated_at": "2026-10-26T02:04:43.771912+00:00"
+}

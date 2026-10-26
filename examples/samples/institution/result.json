@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "job_id": "institution",
+  "status": "complete",
+  "reason": null,
+  "partial": false,
+  "data": [
+    {
+      "missing_reasons": {},
+      "normalized": {
+        "identifiers": {
+          "orderInsttCd": "SYNTHETIC-ORG",
+          "orderOrd": "01",
+          "orderPlanUntyNo": "SYNTH-PLAN-001",
+          "orderYear": "2026"
+        },
+        "record_semantics": "source_record",
+        "title": "가상 실험실 확장 공사"
+      },
+      "raw": {
+        "bizNm": "가상 실험실 확장 공사",
+        "orderInsttCd": "SYNTHETIC-ORG",
+        "orderInsttNm": "가상도시연구원",
+        "orderMnth": "11",
+        "orderOrd": "01",
+        "orderPlanUntyNo": "SYNTH-PLAN-001",
+        "orderYear": "2026",
+        "sumOrderAmt": "12345678901234567890"
+      }
+    },
+    {
+      "missing_reasons": {},
+      "normalized": {
+        "identifiers": {
+          "orderInsttCd": "SYNTHETIC-ORG",
+          "orderOrd": "02",
+          "orderPlanUntyNo": "SYNTH-PLAN-002",
+          "orderYear": "2026"
+        },
+        "record_semantics": "source_record",
+        "title": "가상 교육동 외벽 보수"
+      },
+      "raw": {
+        "bizNm": "가상 교육동 외벽 보수",
+        "orderInsttCd": "SYNTHETIC-ORG",
+        "orderInsttNm": "가상도시연구원",
+        "orderMnth": "12",
+        "orderOrd": "02",
+        "orderPlanUntyNo": "SYNTH-PLAN-002",
+        "orderYear": "2026",
+        "sumOrderAmt": "86000000"
+      }
+    }
+  ],
+  "source_total_count": 2,
+  "source_total_reason": null,
+  "source_totals_by_segment": [
+    2
+  ],
+  "read_count": 2,
+  "filtered_count": 2,
+  "unique_count": 2,
+  "calls_reserved": 1,
+  "max_calls": 20,
+  "checkpoint": {
+    "segment": 1,
+    "page": 1
+  },
+  "failed_segments": [],
+  "query": {
+    "service": "plans",
+    "business": "construction",
+    "start": "2026-10-01",
+    "end": "2026-10-01",
+    "params": {
+      "orderBgnYm": "202610",
+      "orderEndYm": "202612",
+      "orderInsttCd": "SYNTHETIC-ORG"
+    },
+    "page_size": 2
+  },
+  "counts_note": "read/filtered include duplicates; unique_count is persisted deduplication; totals are per-window source reports",
+  "snapshot_guarantee": false,
+  "created_at": "2026-10-26T02:04:43.811980+00:00",
+  "updated_at": "2026-10-26T02:04:43.815577+00:00"
+}

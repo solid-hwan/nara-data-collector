@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "sionlab-procurement": {
+      "command": "/ABSOLUTE/PATH/TO/.venv/bin/python",
+      "args": ["-m", "sionlab_procurement", "--job-dir", "/ABSOLUTE/PATH/TO/LOCAL/jobs", "serve"],
+      "env": {"DATA_GO_KR_API_KEY": "REPLACE_LOCALLY_WITH_DECODED_KEY"}
+    }
+  }
+}

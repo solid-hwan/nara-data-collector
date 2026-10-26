@@ -1,0 +1,19 @@
+name: checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python setup-lab.py
+      - run: .venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
+      - run: .venv/bin/python -m sionlab_procurement --help
+      - run: .venv/bin/python examples/run_examples.py --output "${{ runner.temp }}/examples"
